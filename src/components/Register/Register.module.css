@@ -22,3 +22,6 @@
 #email, #password, #submitPassword {
     width: 340px;
 }
+.redirect {
+    color: #1976d2
+}

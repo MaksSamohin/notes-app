@@ -1,8 +1,7 @@
 import styles from "./page.module.css";
-import Login from "@/components/Login/Login";
 import Register from "@/components/Register/Register";
 
-export default function Auth() {
+export default function RegisterPage() {
   return (
     <main className={styles.main}>
       <Register />

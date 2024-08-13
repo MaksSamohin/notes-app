@@ -11,12 +11,21 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import styles from "./Login.module.css";
+import Link from "next/link";
+import { auth } from "@/firebaseConfig";
+import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { setUser } from "@/store/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -37,8 +46,6 @@ export default function Login() {
     if (!password) {
       setPasswordError("Password is required");
       valid = false;
-    } else if (password.length < 8) {
-      setPasswordError("Password length must be more than 8 chars");
     } else {
       setPasswordError("");
     }
@@ -46,10 +53,22 @@ export default function Login() {
     return valid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (validateForm()) {
-      console.log("Email:", email);
-      console.log("Password:", password);
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        console.log("User logged in:", userCredential.user);
+        dispatch(setUser(userCredential.user));
+        router.push("/");
+      } catch (error: any) {
+        setGeneralError(error.message);
+        setPasswordError("Incorrect password");
+      }
     }
   };
 
@@ -85,7 +104,12 @@ export default function Login() {
           </FormHelperText>
         )}
       </FormControl>
-
+      <Box>
+        Don't have account?{" "}
+        <Link className={styles.redirect} href="/register">
+          Register
+        </Link>
+      </Box>
       <Button type="submit" onClick={handleSubmit}>
         Sign In
       </Button>

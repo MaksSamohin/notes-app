@@ -24,7 +24,7 @@ export default function Nav() {
             </Link>
           </li>
         </ul>
-        <Link href="/auth" className={styles.link}>
+        <Link href="/login" className={styles.link}>
           <Button className={styles.logout}>Log out</Button>
         </Link>
       </Container>

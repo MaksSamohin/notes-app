@@ -14,6 +14,7 @@ import styles from "./Register.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -136,6 +137,12 @@ export default function Register() {
           )}
         </FormControl>
       </form>
+      <Box>
+        Already have an account?{" "}
+        <Link className={styles.redirect} href="/login">
+          Login
+        </Link>
+      </Box>
       <Button type="submit" onClick={handleSubmit}>
         Sign In
       </Button>
