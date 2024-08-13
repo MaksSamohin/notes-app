@@ -1,0 +1,36 @@
+.editableNote {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 660px;
+    padding: 20px;
+}
+.editableNoteTitle {
+    width: 100%;
+}
+.editableNoteText {
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    resize: none;
+    background-image: linear-gradient(to bottom right, #f5f7fa, #f1f1f1);
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    outline: none;
+    font-size: 16px;
+}
+.editableNoteButtons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+.editableNoteSave, .editableNoteReset {
+    min-width: 70%;
+    letter-spacing: 0.2em;
+    background-color: #1976d2;
+    color: white;
+}
+.editableNoteSave:hover, .editableNoteReset:hover {
+    background-color: #77abdf;
+} 

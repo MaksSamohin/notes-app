@@ -14,12 +14,16 @@
     margin-bottom: 20px;
 }
 .emailForm, .passwordForm {
-    margin-bottom: 50px;
+    margin-bottom: 35px;
 }
 #email, #password {
     width: 340px;
 }
 
 .redirect {
-    color: #1976d2
+    color: #1976d2;
+}
+.generalError {
+    color: #d32f2f;
+    margin-bottom: 10px;
 }

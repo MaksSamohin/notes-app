@@ -9,6 +9,10 @@ import { auth } from "@/firebaseConfig";
 import styles from "./Nav.module.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth.hook";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 
 export default function Nav() {
   const user = useSelector((state: RootState) => state.user);
@@ -47,21 +51,25 @@ export default function Nav() {
         <ul className={styles.linkList}>
           <li>
             <Link href="/" className={styles.link}>
+              <DashboardIcon sx={{ fontSize: 30 }} />
               Dashboard
             </Link>
           </li>
           <li>
             <Link href="/edit" className={styles.link}>
+              <EditNoteIcon sx={{ fontSize: 45 }} />
               Add/Edit
             </Link>
           </li>
           <li>
             <Link href="/" className={styles.link}>
+              <AnalyticsIcon sx={{ fontSize: 30 }} />
               Analysis
             </Link>
           </li>
         </ul>
         <Button onClick={handleMenuOpen} className={styles.emailButton}>
+          <AccountCircleIcon sx={{ fontSize: 40 }} />
           {user ? user.email : ""}
         </Button>
         <Menu

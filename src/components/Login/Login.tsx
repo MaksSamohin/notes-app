@@ -76,6 +76,8 @@ export default function Login() {
           setEmailError("No user found with this email");
         } else if (error.code === "auth/invalid-email") {
           setEmailError("Invalid email");
+        } else if (error.code === "auth/invalid-credential") {
+          setGeneralError("Invalid credential");
         } else {
           setGeneralError("Failed to sign in. Please try again.");
         }
@@ -115,6 +117,9 @@ export default function Login() {
           </FormHelperText>
         )}
       </FormControl>
+      {generalError && (
+        <Typography className={styles.generalError}>{generalError}</Typography>
+      )}
       <Box>
         Don't have account?{" "}
         <Link className={styles.redirect} href="/register">

@@ -1,8 +1,11 @@
 "use client";
-import { Inter } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
-
+const roboto_mono = Roboto_Mono({
+  subsets: ["latin"],
+  display: "swap",
+});
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -10,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={roboto_mono.className}>{children}</body>
     </html>
   );
 }
