@@ -1,11 +1,4 @@
-import {
-  AppBar,
-  Container,
-  Button,
-  Menu,
-  MenuItem,
-  CircularProgress,
-} from "@mui/material";
+import { AppBar, Container, Button, Menu, MenuItem } from "@mui/material";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth.hook";
 
 export default function Nav() {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const route = useRouter();
@@ -28,7 +21,8 @@ export default function Nav() {
     if (!user) {
       route.push("/login");
     }
-  }, []);
+  }, [dispatch]);
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,7 +41,6 @@ export default function Nav() {
       console.error("Error signing out: ", error);
     }
   };
-
   return (
     <AppBar>
       <Container className={styles.bar}>

@@ -84,6 +84,7 @@ export default function Register() {
         console.log("User registered:", userCredential.user);
         router.push("/");
       } catch (error: any) {
+        setEmailError("Email is unavailable");
         setGeneralError(error.message);
       }
     }
@@ -148,7 +149,7 @@ export default function Register() {
         </Link>
       </Box>
       <Button type="submit" onClick={handleSubmit}>
-        Sign In
+        Register
       </Button>
     </Box>
   );

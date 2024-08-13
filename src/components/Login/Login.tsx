@@ -55,6 +55,8 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setGeneralError("");
+
     if (validateForm()) {
       try {
         const userCredential = await signInWithEmailAndPassword(
@@ -63,11 +65,20 @@ export default function Login() {
           password
         );
         console.log("User logged in:", userCredential.user);
-        dispatch(setUser(userCredential.user));
+        const { uid, email: userEmail } = userCredential.user;
+        dispatch(setUser({ uid, email: userEmail }));
         router.push("/");
       } catch (error: any) {
-        setGeneralError(error.message);
-        setPasswordError("Incorrect password");
+        console.error("Login error:", error); // Для отладки
+        if (error.code === "auth/wrong-password") {
+          setPasswordError("Incorrect password");
+        } else if (error.code === "auth/user-not-found") {
+          setEmailError("No user found with this email");
+        } else if (error.code === "auth/invalid-email") {
+          setEmailError("Invalid email");
+        } else {
+          setGeneralError("Failed to sign in. Please try again.");
+        }
       }
     }
   };
