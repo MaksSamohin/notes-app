@@ -21,10 +21,20 @@ export default function NoteList() {
     };
     fetchNotes();
   }, []);
+
+  const handleDelete = (id: string) => {
+    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+  };
   return (
     <Box className={styles.noteList}>
       {notes.map((note) => (
-        <Note key={note.id} title={note.title} content={note.content} />
+        <Note
+          key={note.id}
+          id={note.id}
+          title={note.title}
+          content={note.content}
+          onDelete={handleDelete}
+        />
       ))}
       <Link href="/edit">
         <Button className={styles.addNote}>
