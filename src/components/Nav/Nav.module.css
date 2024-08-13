@@ -1,0 +1,22 @@
+.bar {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.linkList {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+.logout {
+    color: white;
+    font-weight: 600;
+}
