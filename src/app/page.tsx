@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import NoteList from "@/components/NoteList/NoteList";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import { useAuth } from "@/hooks/useAuth.hook";
 
 export default function Home() {
   return (

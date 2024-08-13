@@ -43,6 +43,8 @@ export default function Register() {
     if (!email) {
       setEmailError("Email is required");
       valid = false;
+    } else if (email.length > 48) {
+      setEmailError("Email length is too long");
     } else {
       setEmailError("");
     }
@@ -53,6 +55,8 @@ export default function Register() {
     } else if (password.length < 8) {
       setPasswordError("Password length must be more than 8 chars");
       valid = false;
+    } else if (password.length > 64) {
+      setPasswordError("Password length is too long");
     } else {
       setPasswordError("");
     }
