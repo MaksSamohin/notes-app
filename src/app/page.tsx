@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import Nav from "@/components/Nav/Nav";
 import styles from "./page.module.css";
 import NoteList from "@/components/NoteList/NoteList";

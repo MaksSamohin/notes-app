@@ -54,11 +54,11 @@ export default function Note() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box>
-          <Typography>Are you sure to delete this?</Typography>
-          <Box>
-            <Button>Yes</Button>
-            <Button>No</Button>
+        <Box className={styles.deleteModal}>
+          <Typography>Are you sure to delete this note?</Typography>
+          <Box className={styles.deleteModalButtons}>
+            <Button onClick={handleClose}>Yes</Button>
+            <Button onClick={handleClose}>No</Button>
           </Box>
         </Box>
       </Modal>

@@ -24,7 +24,9 @@ export default function Nav() {
             </Link>
           </li>
         </ul>
-        <Button className={styles.logout}>Log out</Button>
+        <Link href="/auth" className={styles.link}>
+          <Button className={styles.logout}>Log out</Button>
+        </Link>
       </Container>
     </AppBar>
   );
