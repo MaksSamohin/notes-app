@@ -1,0 +1,12 @@
+.analysis {
+    min-width: 40%;
+}
+
+.analysisItems {
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+.analysisWords {
+}
