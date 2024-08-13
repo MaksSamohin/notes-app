@@ -3,8 +3,14 @@
 import { Paper, Typography, Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "./Note.module.css";
+import Link from "next/link";
 
-export default function Note() {
+interface NoteProps {
+  title: string;
+  content: string;
+}
+
+export default function Note({ title, content }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => {
     setOpen(true);
@@ -16,35 +22,13 @@ export default function Note() {
   return (
     <>
       <Paper elevation={3} className={styles.note}>
-        <Typography className={styles.noteTitle}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure quam
-          facere ratione, alias laboriosam, ad officia delectus placeat
-          voluptates nihil similique fugiat aliquam, quibusdam exercitationem?
-          Beatae delectus autem molestiae error!
-        </Typography>
+        <Typography className={styles.noteTitle}>{title}</Typography>
         <hr />
-        <Typography className={styles.noteContent}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem
-          placeat blanditiis qui veritatis amet, omnis velit ea laboriosam
-          voluptate consequuntur saepe fugit consequatur quae architecto at
-          ipsum vero totam ducimus. Alias, voluptatem in eveniet enim tempora
-          dolorem perferendis doloremque molestias earum nemo laudantium iusto
-          similique dolore a beatae hic laboriosam. Quidem blanditiis eius atque
-          magni dolor ducimus quae excepturi doloribus. Molestias quam totam ea
-          quibusdam alias saepe ducimus voluptatum autem perspiciatis
-          repudiandae assumenda doloremque ut in nulla suscipit, deleniti
-          obcaecati, magnam corporis rerum minus eligendi beatae quo earum. Cum,
-          incidunt? Sunt similique, inventore numquam consequatur, fugiat
-          provident qui accusantium ipsam quis accusamus sed obcaecati
-          reiciendis recusandae asperiores animi est iusto omnis et porro.
-          Accusantium quaerat, doloribus molestias maxime blanditiis voluptate!
-          Ratione quis aliquid et voluptate saepe autem veniam id quidem amet
-          explicabo necessitatibus minus aliquam, est porro non vero laborum
-          dolorem eum. Vel architecto voluptas iusto ratione? Dignissimos, quam
-          commodi.
-        </Typography>
+        <Typography className={styles.noteContent}>{content}</Typography>
         <Box className={styles.noteButtons}>
-          <Button>Edit</Button>
+          <Link href="/edit">
+            <Button>Edit</Button>
+          </Link>
           <Button onClick={handleOpen}>Delete</Button>
         </Box>
       </Paper>

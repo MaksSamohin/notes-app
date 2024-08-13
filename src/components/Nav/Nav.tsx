@@ -51,7 +51,7 @@ export default function Nav() {
             </Link>
           </li>
           <li>
-            <Link href="/" className={styles.link}>
+            <Link href="/edit" className={styles.link}>
               Add/Edit
             </Link>
           </li>
