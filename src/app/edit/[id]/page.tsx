@@ -38,7 +38,7 @@ export default function Edit() {
 
   return (
     <Provider store={store}>
-      <main className={styles.main}>
+      <Box component="main" className={styles.main}>
         <Nav />
         <Box className={styles.notesInfo}>
           <EditableNote noteId={id} onUpdateMetrics={handleUpdateMetrics} />
@@ -49,7 +49,7 @@ export default function Edit() {
             tone={metrics.tone}
           />
         </Box>
-      </main>
+      </Box>
     </Provider>
   );
 }

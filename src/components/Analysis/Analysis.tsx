@@ -1,5 +1,4 @@
 import { Typography, Box, Paper } from "@mui/material";
-import React, { useEffect } from "react";
 import styles from "./Analysis.module.css";
 
 interface AnalysisProps {
@@ -15,7 +14,6 @@ export default function Analysis({
   topWords,
   tone,
 }: AnalysisProps) {
-  useEffect(() => {});
   return (
     <Box className={styles.analysis}>
       <Paper className={styles.analysisItems}>

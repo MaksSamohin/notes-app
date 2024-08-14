@@ -10,12 +10,12 @@ import { store } from "@/store/store";
 export default function Home() {
   return (
     <Provider store={store}>
-      <main className={styles.main}>
+      <Box component="main" className={styles.main}>
         <Nav />
         <Box>
           <NoteList />
         </Box>
-      </main>
+      </Box>
     </Provider>
   );
 }

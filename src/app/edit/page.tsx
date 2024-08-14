@@ -4,7 +4,7 @@ import Nav from "@/components/Nav/Nav";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import styles from "./page.module.css";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import EditableNote from "@/components/EditableNote/EditableNote";
 import Analysis from "@/components/Analysis/Analysis";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export default function Edit() {
   };
   return (
     <Provider store={store}>
-      <main className={styles.main}>
+      <Box component="main" className={styles.main}>
         <Nav />
         <Box className={styles.notesInfo}>
           <EditableNote onUpdateMetrics={handleUpdateMetrics} />
@@ -43,7 +43,7 @@ export default function Edit() {
             tone={metrics.tone}
           />
         </Box>
-      </main>
+      </Box>
     </Provider>
   );
 }

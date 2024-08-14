@@ -46,10 +46,10 @@ export default function EditableNote({
 
   // Checking and setting info by ID of note
   useEffect(() => {
-    if (noteIdFromUrl) {
+    if (noteIdFromUrl && typeof noteIdFromUrl === "string") {
       const fetchNote = async () => {
         try {
-          const docRef = doc(db, "notes", noteIdFromUrl as string);
+          const docRef = doc(db, "notes", noteIdFromUrl);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
@@ -75,7 +75,7 @@ export default function EditableNote({
               tone: noteData.tone,
             });
           } else {
-            console.log("No such document!");
+            console.log("sdfsdf");
           }
         } catch (error) {
           console.error("Error fetching note:", error);

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { setUser } from "@/store/userSlice";
 import { useDispatch } from "react-redux";
+import { FirebaseError } from "firebase/app";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -68,20 +69,34 @@ export default function Login() {
         );
         console.log("User logged in:", userCredential.user);
         const { uid, email: userEmail } = userCredential.user;
+
+        if (!userEmail) {
+          setGeneralError("Email is null");
+          return;
+        }
+
         dispatch(setUser({ uid, email: userEmail }));
         router.push("/");
-      } catch (error: any) {
-        console.error("Login error:", error); // Для отладки
-        if (error.code === "auth/wrong-password") {
-          setPasswordError("Incorrect password");
-        } else if (error.code === "auth/user-not-found") {
-          setEmailError("No user found with this email");
-        } else if (error.code === "auth/invalid-email") {
-          setEmailError("Invalid email");
-        } else if (error.code === "auth/invalid-credential") {
-          setGeneralError("Invalid credential");
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          switch (error.code) {
+            case "auth/wrong-password":
+              setPasswordError("Incorrect password");
+              break;
+            case "auth/user-not-found":
+              setEmailError("No user found with this email");
+              break;
+            case "auth/invalid-email":
+              setEmailError("Invalid email");
+              break;
+            case "auth/invalid-credential":
+              setPasswordError("Incorrect password");
+              break;
+            default:
+              setGeneralError("Failed to sign in. Please try again.");
+          }
         } else {
-          setGeneralError("Failed to sign in. Please try again.");
+          setGeneralError("An unexpected error occurred.");
         }
       }
     }

@@ -12,7 +12,6 @@ interface NoteProps {
   content: string;
   id: string;
   wordCount: number;
-  symbolsCount: number;
   topWords: string;
   tone: string;
   onDelete: (id: string) => void;

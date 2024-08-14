@@ -30,6 +30,8 @@ export default function NoteList() {
       return;
     }
     setUserLoading(false);
+
+    // Fetching notes by uid
     const fetchNotes = async () => {
       setLoading(true);
       try {
