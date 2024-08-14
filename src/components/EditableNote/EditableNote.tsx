@@ -5,6 +5,8 @@ import {
   Paper,
   Button,
   FormHelperText,
+  Modal,
+  Typography,
 } from "@mui/material";
 import styles from "./EditableNote.module.css";
 import { useRouter, useParams } from "next/navigation";
@@ -35,6 +37,16 @@ export default function EditableNote({
   const [titleError, setTitleError] = useState<string | null>(null);
   const [contentError, setContentError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>("");
+
+  function openModal() {
+    setOpen(true);
+  }
+  const handleClose = () => {
+    setOpen(false);
+    router.push("/");
+  };
 
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
@@ -76,7 +88,8 @@ export default function EditableNote({
               tone: noteData.tone,
             });
           } else {
-            console.log("sdfsdf");
+            setModalMessage("Document doesn't exist. Please create new.");
+            openModal();
           }
         } catch (error) {
           console.error("Error fetching note:", error);
@@ -193,7 +206,8 @@ export default function EditableNote({
         const user = auth.currentUser;
 
         if (!user) {
-          alert("User not authenticated");
+          setModalMessage("User is not authorized");
+          openModal();
           return;
         }
         const uid = user.uid;
@@ -253,32 +267,44 @@ export default function EditableNote({
   };
 
   return (
-    <Paper className={styles.editableNote}>
-      <Input
-        className={styles.editableNoteTitle}
-        placeholder="Note Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        error={!!titleError}
-      />
-      {titleError && <FormHelperText error>{titleError}</FormHelperText>}
-      <hr />
-      <TextareaAutosize
-        minRows="35"
-        className={styles.editableNoteText}
-        placeholder="Note Content"
-        value={content}
-        onChange={handleContentChange}
-      />
-      {contentError && <FormHelperText error>{contentError}</FormHelperText>}
-      <Box className={styles.editableNoteButtons}>
-        <Button onClick={handleSave} className={styles.editableNoteSave}>
-          Save
-        </Button>
-        <Button onClick={handleReset} className={styles.editableNoteReset}>
-          Reset
-        </Button>
-      </Box>
-    </Paper>
+    <>
+      <Paper className={styles.editableNote}>
+        <Input
+          className={styles.editableNoteTitle}
+          placeholder="Note Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          error={!!titleError}
+        />
+        {titleError && <FormHelperText error>{titleError}</FormHelperText>}
+        <hr />
+        <TextareaAutosize
+          minRows="35"
+          className={styles.editableNoteText}
+          placeholder="Note Content"
+          value={content}
+          onChange={handleContentChange}
+        />
+        {contentError && <FormHelperText error>{contentError}</FormHelperText>}
+        <Box className={styles.editableNoteButtons}>
+          <Button onClick={handleSave} className={styles.editableNoteSave}>
+            Save
+          </Button>
+          <Button onClick={handleReset} className={styles.editableNoteReset}>
+            Reset
+          </Button>
+        </Box>
+      </Paper>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box className={styles.errorModal}>
+          <Typography>{modalMessage}</Typography>
+        </Box>
+      </Modal>
+    </>
   );
 }
