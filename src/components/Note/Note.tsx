@@ -14,6 +14,7 @@ interface NoteProps {
   wordCount: number;
   symbolsCount: number;
   topWords: string;
+  emotion: string;
   onDelete: (id: string) => void;
 }
 
@@ -24,6 +25,7 @@ export default function Note({
   onDelete,
   wordCount,
   topWords,
+  emotion,
 }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => {
@@ -43,7 +45,6 @@ export default function Note({
       console.error("Failed to delete the note:", error);
     }
   };
-
   return (
     <>
       <Paper elevation={3} className={styles.note}>
@@ -55,9 +56,11 @@ export default function Note({
           <Typography className={styles.noteWords}>
             Кол-во слов: {wordCount}
           </Typography>
-          <Typography className={styles.noteTon}>Тональность: </Typography>
+          <Typography className={styles.noteTon}>
+            Тональность: {emotion}
+          </Typography>
           <Typography className={styles.noteOften}>
-            Частотные слова: {topWords}
+            Частотные слова: {topWords || "Не определены"}
           </Typography>
         </Box>
         <Box className={styles.noteButtons}>

@@ -19,16 +19,19 @@ export default function Edit() {
     wordCount: number;
     symbolsCount: number;
     topWords: string;
+    emotion: string;
   }>({
     wordCount: 0,
     symbolsCount: 0,
     topWords: "",
+    emotion: "",
   });
 
   const handleUpdateMetrics = (newMetrics: {
     wordCount: number;
     symbolsCount: number;
     topWords: string;
+    emotion: string;
   }) => {
     setMetrics(newMetrics);
   };
@@ -47,6 +50,7 @@ export default function Edit() {
             wordCount={metrics.wordCount}
             symbolsCount={metrics.symbolsCount}
             topWords={metrics.topWords}
+            emotion={metrics.emotion}
           />
         </Box>
       </main>

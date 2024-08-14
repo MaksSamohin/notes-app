@@ -6,12 +6,14 @@ interface AnalysisProps {
   wordCount: number;
   symbolsCount: number;
   topWords: string;
+  emotion: string;
 }
 
 export default function Analysis({
   wordCount,
   symbolsCount,
   topWords,
+  emotion,
 }: AnalysisProps) {
   useEffect(() => {});
   return (
@@ -27,7 +29,7 @@ export default function Analysis({
           Повторяющиеся слова: {topWords}
         </Typography>
         <Typography className={styles.analysisEmotion}>
-          Эмоциональная окраска текста:
+          Эмоциональная окраска текста: {emotion}
         </Typography>
       </Paper>
     </Box>

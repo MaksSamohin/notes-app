@@ -13,6 +13,7 @@ interface Note {
   content: string;
   wordCount: number;
   topWords: string;
+  emotion: string;
 }
 
 export default function NoteList() {
@@ -26,7 +27,7 @@ export default function NoteList() {
         id: doc.id,
         ...doc.data(),
       }));
-      setNotes(notesData);
+      setNotes(notesData as Note[]);
     };
     fetchNotes();
   }, []);
@@ -34,6 +35,7 @@ export default function NoteList() {
   const handleDelete = (id: string) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
   };
+
   return (
     <Box className={styles.noteList}>
       {notes.map((note) => (
@@ -44,6 +46,7 @@ export default function NoteList() {
           content={note.content}
           wordCount={note.wordCount}
           topWords={note.topWords}
+          emotion={note.emotion}
           onDelete={handleDelete}
         />
       ))}

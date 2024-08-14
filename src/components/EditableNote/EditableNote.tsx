@@ -23,6 +23,7 @@ export default function EditableNote({
   const [wordCount, setWordCount] = useState<number>(0);
   const [symbolsCount, setSymbolsCount] = useState<number>(0);
   const [topWords, setTopWords] = useState<string>("");
+  const [emotion, setEmotion] = useState<string>("");
 
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
@@ -30,6 +31,7 @@ export default function EditableNote({
   const wordWorkerRef = useRef<Worker | null>(null);
   const symbolsWorkerRef = useRef<Worker | null>(null);
   const topWordsWorkerRef = useRef<Worker | null>(null);
+  const checkEmotionWorkerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
     if (noteIdFromUrl) {
@@ -44,11 +46,13 @@ export default function EditableNote({
           setWordCount(noteData.wordCount);
           setSymbolsCount(noteData.symbolsCount);
           setTopWords(noteData.topWords);
+          setEmotion(noteData.emotion);
 
           onUpdateMetrics({
             wordCount: noteData.wordCount,
             symbolsCount: noteData.symbolsCount,
             topWords: noteData.topWords,
+            emotion: noteData.emotion,
           });
         } else {
           console.log("No such document!");
@@ -70,6 +74,10 @@ export default function EditableNote({
     );
     topWordsWorkerRef.current = new Worker(
       new URL("@/workers/topWordsCountWorker.ts", import.meta.url),
+      { type: "module" }
+    );
+    checkEmotionWorkerRef.current = new Worker(
+      new URL("@/workers/checkEmotionWorker.ts", import.meta.url),
       { type: "module" }
     );
 
@@ -96,6 +104,13 @@ export default function EditableNote({
         topWords: e.data,
       }));
     };
+    checkEmotionWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
+      setEmotion(e.data);
+      onUpdateMetrics((prevMetrics) => ({
+        ...prevMetrics,
+        emotion: e.data,
+      }));
+    };
 
     return () => {
       if (wordWorkerRef.current) {
@@ -107,15 +122,21 @@ export default function EditableNote({
       if (topWordsWorkerRef.current) {
         topWordsWorkerRef.current.terminate();
       }
+      if (checkEmotionWorkerRef.current) {
+        checkEmotionWorkerRef.current.terminate();
+      }
     };
   }, [onUpdateMetrics]);
 
   useEffect(() => {
-    if (content && symbolsWorkerRef.current) {
-      symbolsWorkerRef.current.postMessage(content);
+    if (content && topWordsWorkerRef.current) {
+      topWordsWorkerRef.current.postMessage(content);
     }
     if (content && topWordsWorkerRef.current) {
       topWordsWorkerRef.current.postMessage(content);
+    }
+    if (content && checkEmotionWorkerRef.current) {
+      checkEmotionWorkerRef.current.postMessage(content);
     }
   }, [content]);
 
@@ -125,14 +146,22 @@ export default function EditableNote({
     try {
       if (noteIdFromUrl) {
         const noteRef = doc(db, "notes", noteIdFromUrl as string);
-        await updateDoc(noteRef, { title, content, wordCount, symbolsCount });
-      } else {
-        const docRef = await addDoc(collection(db, "notes"), {
+        await updateDoc(noteRef, {
           title,
           content,
           wordCount,
           symbolsCount,
           topWords,
+          emotion,
+        });
+      } else {
+        await addDoc(collection(db, "notes"), {
+          title,
+          content,
+          wordCount,
+          symbolsCount,
+          topWords,
+          emotion,
           createdAt: new Date(),
         });
       }
@@ -159,8 +188,10 @@ export default function EditableNote({
     if (topWordsWorkerRef.current) {
       topWordsWorkerRef.current.postMessage(e.target.value);
     }
+    if (checkEmotionWorkerRef.current) {
+      checkEmotionWorkerRef.current.postMessage(e.target.value);
+    }
   };
-
   return (
     <Paper className={styles.editableNote}>
       <Input

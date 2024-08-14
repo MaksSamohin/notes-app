@@ -5,9 +5,11 @@ function countWords(text: string) {
         return 0;
     }
 
-    const wordsArray = text.split(/\s+/);
+    const cleanedText = text.replace(/[^а-яА-ЯёЁa-zA-Z]+/g, ' ').trim();
 
-    return wordsArray.length;
+    const wordsArray = cleanedText.split(/\s+/).filter(Boolean);
+
+    return wordsArray ? wordsArray.length : 0;
 }
 
 self.addEventListener('message', (e: MessageEvent<string>) => {
