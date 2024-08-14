@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import styles from "./EditableNote.module.css";
 import { useRouter, useParams } from "next/navigation";
-import { db } from "@/firebaseConfig";
+import { db, auth } from "@/firebaseConfig";
 import { addDoc, collection, updateDoc, doc, getDoc } from "firebase/firestore";
 import { useState, useRef, useEffect } from "react";
 
@@ -170,6 +170,14 @@ export default function EditableNote({
     }
 
     try {
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("User not authenticated");
+        return;
+      }
+      const uid = user.uid;
+
       if (noteIdFromUrl) {
         const noteRef = doc(db, "notes", noteIdFromUrl);
         await updateDoc(noteRef, {
@@ -179,6 +187,7 @@ export default function EditableNote({
           symbolsCount,
           topWords,
           tone,
+          uid,
         });
       } else {
         await addDoc(collection(db, "notes"), {
@@ -189,6 +198,7 @@ export default function EditableNote({
           topWords,
           tone,
           createdAt: new Date(),
+          uid,
         });
       }
       router.push("/");

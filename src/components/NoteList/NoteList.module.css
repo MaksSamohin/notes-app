@@ -13,3 +13,9 @@
     
     border: 3px dashed rgb(206, 206, 206);
 }
+.loadingContainer {
+    margin-top: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

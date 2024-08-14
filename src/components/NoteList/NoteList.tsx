@@ -1,11 +1,13 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import Note from "../Note/Note";
 import styles from "./NoteList.module.css";
 import { AddCircleOutline } from "@mui/icons-material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 
 interface Note {
   id: string;
@@ -17,25 +19,56 @@ interface Note {
 }
 
 export default function NoteList() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState([]);
+  const user = useSelector((state: RootState) => state.user);
+  const [loading, setLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true);
 
   useEffect(() => {
+    if (!user.uid) {
+      setUserLoading(true);
+      return;
+    }
+    setUserLoading(false);
     const fetchNotes = async () => {
-      const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      const notesData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setNotes(notesData as Note[]);
+      setLoading(true);
+      try {
+        const uid = user.uid;
+
+        const q = query(
+          collection(db, "notes"),
+          orderBy("createdAt", "desc"),
+          where("uid", "==", uid)
+        );
+        const querySnapshot = await getDocs(q);
+        const notesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setNotes(notesData as Note[]);
+      } catch (error) {
+        console.error("Error fetching notes: ", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchNotes();
-  }, []);
+
+    if (user.uid) {
+      fetchNotes();
+    }
+  }, [user.uid]);
 
   const handleDelete = (id: string) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
   };
 
+  if (userLoading || loading) {
+    return (
+      <Box className={styles.loadingContainer}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Box className={styles.noteList}>
       {notes.map((note) => (
