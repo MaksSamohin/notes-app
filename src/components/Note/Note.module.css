@@ -20,7 +20,7 @@
     word-wrap: break-word;
 }
 .noteContent {
-    height: 220px;
+    height: 205px;
     word-wrap: break-word;
     margin-top: 10px;
     font-size: 14px;
@@ -30,7 +30,7 @@
     -webkit-line-clamp: 10;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 .noteButtons {
     display: flex;
