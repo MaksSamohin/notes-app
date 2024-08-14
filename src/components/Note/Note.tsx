@@ -27,7 +27,8 @@ export default function Note({
   tone,
 }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const handleOpen = () => {
+  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setOpen(true);
   };
   const handleClose = () => {
@@ -47,26 +48,32 @@ export default function Note({
   return (
     <>
       <Paper elevation={3} className={styles.note}>
-        <Typography className={styles.noteTitle}>{title}</Typography>
-        <hr />
-        <Typography className={styles.noteContent}>{content}</Typography>
-        <hr />
-        <Box className={styles.noteTags}>
-          <Typography className={styles.noteWords}>
-            Word count: {wordCount}
-          </Typography>
-          <Typography className={styles.noteTon}>Text tone: {tone}</Typography>
-          <Typography className={styles.noteOften}>
-            Top words: {topWords || "No words"}
-          </Typography>
-        </Box>
+        <Link className={styles.link} href={`/edit/${id}`}>
+          <Typography className={styles.noteTitle}>{title}</Typography>
+          <hr />
+          <Typography className={styles.noteContent}>{content}</Typography>
+          <hr />
+          <Box className={styles.noteTags}>
+            <Typography className={styles.noteWords}>
+              Word count: {wordCount}
+            </Typography>
+            <Typography className={styles.noteTon}>
+              Text tone: {tone}
+            </Typography>
+            <Typography className={styles.noteOften}>
+              Top words: {topWords || "No words"}
+            </Typography>
+          </Box>
+        </Link>
+
         <Box className={styles.noteButtons}>
           <Link href={`/edit/${id}`}>
             <Button>Edit</Button>
           </Link>
-          <Button onClick={handleOpen}>Delete</Button>
+          <Button onClick={(e) => handleOpen(e)}>Delete</Button>
         </Box>
       </Paper>
+
       <Modal
         open={open}
         onClose={handleClose}
