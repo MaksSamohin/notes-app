@@ -36,10 +36,6 @@ export default function Edit() {
     setMetrics(newMetrics);
   };
 
-  if (!id) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Provider store={store}>
       <main className={styles.main}>

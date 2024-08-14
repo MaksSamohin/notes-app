@@ -38,40 +38,55 @@ export default function EditableNote({
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
 
+  // Creating refs for workers
   const wordWorkerRef = useRef<Worker | null>(null);
   const symbolsWorkerRef = useRef<Worker | null>(null);
   const topWordsWorkerRef = useRef<Worker | null>(null);
   const checkToneWorkerRef = useRef<Worker | null>(null);
 
+  // Checking and setting info by ID of note
   useEffect(() => {
     if (noteIdFromUrl) {
       const fetchNote = async () => {
-        const docRef = doc(db, "notes", noteIdFromUrl as string);
-        const docSnap = await getDoc(docRef);
+        try {
+          const docRef = doc(db, "notes", noteIdFromUrl as string);
+          const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const noteData = docSnap.data();
-          setTitle(noteData.title);
-          setContent(noteData.content);
-          setWordCount(noteData.wordCount);
-          setSymbolsCount(noteData.symbolsCount);
-          setTopWords(noteData.topWords);
-          setTone(noteData.tone);
+          if (docSnap.exists()) {
+            const noteData = docSnap.data();
+            const user = auth.currentUser;
 
-          onUpdateMetrics({
-            wordCount: noteData.wordCount,
-            symbolsCount: noteData.symbolsCount,
-            topWords: noteData.topWords,
-            tone: noteData.tone,
-          });
-        } else {
-          console.log("No such document!");
+            if (!user || noteData.uid !== user.uid) {
+              router.push("/edit");
+              return;
+            }
+
+            setTitle(noteData.title);
+            setContent(noteData.content);
+            setWordCount(noteData.wordCount);
+            setSymbolsCount(noteData.symbolsCount);
+            setTopWords(noteData.topWords);
+            setTone(noteData.tone);
+
+            onUpdateMetrics({
+              wordCount: noteData.wordCount,
+              symbolsCount: noteData.symbolsCount,
+              topWords: noteData.topWords,
+              tone: noteData.tone,
+            });
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching note:", error);
         }
       };
+
       fetchNote();
     }
-  }, [noteIdFromUrl]);
+  }, [noteIdFromUrl, router]);
 
+  // Main workers logic
   useEffect(() => {
     wordWorkerRef.current = new Worker(
       new URL("@/workers/wordCountWorker.ts", import.meta.url),
@@ -138,9 +153,10 @@ export default function EditableNote({
     };
   }, [onUpdateMetrics]);
 
+  // Worker's content display while changing content
   useEffect(() => {
-    if (content && topWordsWorkerRef.current) {
-      topWordsWorkerRef.current.postMessage(content);
+    if (content && symbolsWorkerRef.current) {
+      symbolsWorkerRef.current.postMessage(content);
     }
     if (content && topWordsWorkerRef.current) {
       topWordsWorkerRef.current.postMessage(content);
@@ -150,6 +166,7 @@ export default function EditableNote({
     }
   }, [content]);
 
+  // Save button logic
   const handleSave = async () => {
     let hasError = false;
     if (!title) {
@@ -169,6 +186,7 @@ export default function EditableNote({
       return;
     }
 
+    // Updating or creating notes collection
     try {
       const user = auth.currentUser;
 
@@ -207,11 +225,13 @@ export default function EditableNote({
     }
   };
 
+  // Reset all note fields
   const handleReset = () => {
     setTitle("");
     setContent("");
   };
 
+  // Worker's process while changing content
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
 

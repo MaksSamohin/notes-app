@@ -34,6 +34,7 @@ export default function Login() {
     setPassword(e.target.value);
   };
 
+  // Validate form
   const validateForm = () => {
     let valid: boolean = true;
     if (!email) {
@@ -53,6 +54,7 @@ export default function Login() {
     return valid;
   };
 
+  // Submitting login and adding to redux store
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneralError("");

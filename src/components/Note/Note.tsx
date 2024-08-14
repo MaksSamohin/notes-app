@@ -58,7 +58,7 @@ export default function Note({
           </Typography>
           <Typography className={styles.noteTon}>Text tone: {tone}</Typography>
           <Typography className={styles.noteOften}>
-            Top words: {topWords || "Не определены"}
+            Top words: {topWords || "No words"}
           </Typography>
         </Box>
         <Box className={styles.noteButtons}>

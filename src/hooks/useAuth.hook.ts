@@ -4,6 +4,8 @@ import { setUser, clearUser } from "@/store/userSlice";
 import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
+// Hook for check authorization
+
 export function useAuth(setUserLoading: (loading: boolean) => void) {
     const dispatch = useDispatch();
 
