@@ -25,6 +25,7 @@ export default function Nav() {
 
   useEffect(() => {
     if (!loading && !user.uid) {
+      alert("You need to authorize");
       route.push("/login");
     }
   }, [user.uid, route, loading]);

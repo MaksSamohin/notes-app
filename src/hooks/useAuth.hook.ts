@@ -19,5 +19,5 @@ export function useAuth(setLoading: (loading: boolean) => void) {
         })
 
         return () => unsubscribe()
-    }, [dispatch, setLoading])
+    }, [dispatch])
 }

@@ -2,12 +2,14 @@
     padding: 5px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
-
 .linkList {
     list-style: none;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+
     gap: 45px;
 }
 
