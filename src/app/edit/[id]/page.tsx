@@ -1,15 +1,20 @@
 "use client";
 
-import Nav from "@/components/Nav/Nav";
+import EditableNote from "@/components/EditableNote/EditableNote";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
-import styles from "./page.module.css";
 import { Box } from "@mui/material";
-import EditableNote from "@/components/EditableNote/EditableNote";
+import Nav from "@/components/Nav/Nav";
+import styles from "./page.module.css";
+import { useParams } from "next/navigation";
 import Analysis from "@/components/Analysis/Analysis";
 import { useState } from "react";
 
 export default function Edit() {
+  const { id } = useParams();
+
+  console.log("Router ID:", id);
+
   const [metrics, setMetrics] = useState<{
     wordCount: number;
     symbolsCount: number;
@@ -27,12 +32,17 @@ export default function Edit() {
   }) => {
     setMetrics(newMetrics);
   };
+
+  if (!id) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Provider store={store}>
       <main className={styles.main}>
         <Nav />
         <Box className={styles.notesInfo}>
-          <EditableNote onUpdateMetrics={handleUpdateMetrics} />
+          <EditableNote noteId={id} onUpdateMetrics={handleUpdateMetrics} />
           <Analysis
             wordCount={metrics.wordCount}
             symbolsCount={metrics.symbolsCount}

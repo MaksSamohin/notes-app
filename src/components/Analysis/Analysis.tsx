@@ -1,19 +1,30 @@
 import { Typography, Box, Paper } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Analysis.module.css";
 
-export default function Analysis() {
+interface AnalysisProps {
+  wordCount: number;
+  symbolsCount: number;
+  topWords: string;
+}
+
+export default function Analysis({
+  wordCount,
+  symbolsCount,
+  topWords,
+}: AnalysisProps) {
+  useEffect(() => {});
   return (
     <Box className={styles.analysis}>
       <Paper className={styles.analysisItems}>
         <Typography className={styles.analysisWords}>
-          Количество слов:
+          Количество слов: {wordCount}
         </Typography>
         <Typography className={styles.analysisSymbols}>
-          Количество символов:
+          Количество символов: {symbolsCount}
         </Typography>
         <Typography className={styles.analysisOften}>
-          Повторяющиеся слова:
+          Повторяющиеся слова: {topWords}
         </Typography>
         <Typography className={styles.analysisEmotion}>
           Эмоциональная окраска текста:

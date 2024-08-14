@@ -1,0 +1,11 @@
+.main {
+    padding-top: 120px;
+    height: 100dvh;
+    background-color: rgb(240, 240, 240);
+}
+.notesInfo {
+    padding: 0 10px;
+
+    display: flex;
+    gap: 50px;
+}

@@ -11,10 +11,20 @@ interface NoteProps {
   title: string;
   content: string;
   id: string;
+  wordCount: number;
+  symbolsCount: number;
+  topWords: string;
   onDelete: (id: string) => void;
 }
 
-export default function Note({ id, title, content, onDelete }: NoteProps) {
+export default function Note({
+  id,
+  title,
+  content,
+  onDelete,
+  wordCount,
+  topWords,
+}: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => {
     setOpen(true);
@@ -42,9 +52,13 @@ export default function Note({ id, title, content, onDelete }: NoteProps) {
         <Typography className={styles.noteContent}>{content}</Typography>
         <hr />
         <Box className={styles.noteTags}>
-          <Typography className={styles.noteWords}>Кол-во слов:</Typography>
+          <Typography className={styles.noteWords}>
+            Кол-во слов: {wordCount}
+          </Typography>
           <Typography className={styles.noteTon}>Тональность: </Typography>
-          <Typography className={styles.noteOften}>Частотные слова:</Typography>
+          <Typography className={styles.noteOften}>
+            Частотные слова: {topWords}
+          </Typography>
         </Box>
         <Box className={styles.noteButtons}>
           <Link href={`/edit/${id}`}>

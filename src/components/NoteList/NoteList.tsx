@@ -6,8 +6,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  wordCount: number;
+  topWords: string;
+}
+
 export default function NoteList() {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -33,6 +42,8 @@ export default function NoteList() {
           id={note.id}
           title={note.title}
           content={note.content}
+          wordCount={note.wordCount}
+          topWords={note.topWords}
           onDelete={handleDelete}
         />
       ))}
