@@ -34,6 +34,7 @@ export default function EditableNote({
   const [tone, setTone] = useState<string>("");
   const [titleError, setTitleError] = useState<string | null>(null);
   const [contentError, setContentError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
@@ -168,60 +169,62 @@ export default function EditableNote({
 
   // Save button logic
   const handleSave = async () => {
-    let hasError = false;
-    if (!title) {
-      setTitleError("Please set the title");
-      hasError = true;
-    } else {
-      setTitleError(null);
-    }
-    if (!content) {
-      setContentError("Please set the content");
-      hasError = true;
-    } else {
-      setContentError(null);
-    }
+    if (!isSaved) {
+      setIsSaved(true);
+      let hasError = false;
+      if (!title) {
+        setTitleError("Please set the title");
+        hasError = true;
+      } else {
+        setTitleError(null);
+      }
+      if (!content) {
+        setContentError("Please set the content");
+        hasError = true;
+      } else {
+        setContentError(null);
+      }
 
-    if (hasError) {
-      return;
-    }
-
-    // Updating or creating notes collection
-    try {
-      const user = auth.currentUser;
-
-      if (!user) {
-        alert("User not authenticated");
+      if (hasError) {
         return;
       }
-      const uid = user.uid;
+      // Updating or creating notes collection
+      try {
+        const user = auth.currentUser;
 
-      if (noteIdFromUrl) {
-        const noteRef = doc(db, "notes", noteIdFromUrl);
-        await updateDoc(noteRef, {
-          title,
-          content,
-          wordCount,
-          symbolsCount,
-          topWords,
-          tone,
-          uid,
-        });
-      } else {
-        await addDoc(collection(db, "notes"), {
-          title,
-          content,
-          wordCount,
-          symbolsCount,
-          topWords,
-          tone,
-          createdAt: new Date(),
-          uid,
-        });
+        if (!user) {
+          alert("User not authenticated");
+          return;
+        }
+        const uid = user.uid;
+
+        if (noteIdFromUrl) {
+          const noteRef = doc(db, "notes", noteIdFromUrl);
+          await updateDoc(noteRef, {
+            title,
+            content,
+            wordCount,
+            symbolsCount,
+            topWords,
+            tone,
+            uid,
+          });
+        } else {
+          await addDoc(collection(db, "notes"), {
+            title,
+            content,
+            wordCount,
+            symbolsCount,
+            topWords,
+            tone,
+            createdAt: new Date(),
+            uid,
+          });
+        }
+        router.push("/");
+      } catch (error) {
+        console.log("Error:", error);
       }
-      router.push("/");
-    } catch (error) {
-      console.log("Error:", error);
     }
   };
 
