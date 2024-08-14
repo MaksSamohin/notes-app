@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNotes } from "@/store/noteSlice";
 
 interface Note {
   id: string;
@@ -19,6 +20,7 @@ interface Note {
 }
 
 export default function NoteList() {
+  const dispatch = useDispatch();
   const [notes, setNotes] = useState([]);
   const user = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(true);
@@ -31,34 +33,15 @@ export default function NoteList() {
     }
     setUserLoading(false);
 
-    // Fetching notes by uid
-    const fetchNotes = async () => {
-      setLoading(true);
-      try {
-        const uid = user.uid;
-
-        const q = query(
-          collection(db, "notes"),
-          orderBy("createdAt", "desc"),
-          where("uid", "==", uid)
-        );
-        const querySnapshot = await getDocs(q);
-        const notesData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotes(notesData as Note[]);
-      } catch (error) {
-        console.error("Error fetching notes: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (user.uid) {
-      fetchNotes();
+      dispatch(fetchNotes(user.uid) as any)
+        .unwrap()
+        .then((res) => {
+          setNotes(res);
+          setLoading(false);
+        });
     }
-  }, [user.uid]);
+  }, [user.uid, dispatch]);
 
   const handleDelete = (id: string) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
@@ -71,6 +54,7 @@ export default function NoteList() {
       </Box>
     );
   }
+
   return (
     <Box className={styles.noteList}>
       {notes.map((note) => (

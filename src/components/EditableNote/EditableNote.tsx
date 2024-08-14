@@ -13,6 +13,8 @@ import { useRouter, useParams } from "next/navigation";
 import { db, auth } from "@/firebaseConfig";
 import { addDoc, collection, updateDoc, doc, getDoc } from "firebase/firestore";
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchNoteByIdThunk } from "@/store/noteSlice";
 
 interface EditableNoteProps {
   noteId?: string | null;
@@ -28,6 +30,7 @@ export default function EditableNote({
   noteId = null,
   onUpdateMetrics,
 }: EditableNoteProps) {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [wordCount, setWordCount] = useState<number>(0);
@@ -58,47 +61,48 @@ export default function EditableNote({
   const checkToneWorkerRef = useRef<Worker | null>(null);
 
   // Checking and setting info by ID of note
+
   useEffect(() => {
     if (noteIdFromUrl && typeof noteIdFromUrl === "string") {
-      const fetchNote = async () => {
-        try {
-          const docRef = doc(db, "notes", noteIdFromUrl);
-          const docSnap = await getDoc(docRef);
+      const user = auth.currentUser;
 
-          if (docSnap.exists()) {
-            const noteData = docSnap.data();
-            const user = auth.currentUser;
+      if (!user) {
+        setModalMessage("User is not authorized");
+        openModal();
+        return;
+      }
 
-            if (!user || noteData.uid !== user.uid) {
-              router.push("/edit");
-              return;
-            }
-
-            setTitle(noteData.title);
-            setContent(noteData.content);
-            setWordCount(noteData.wordCount);
-            setSymbolsCount(noteData.symbolsCount);
-            setTopWords(noteData.topWords);
-            setTone(noteData.tone);
+      dispatch(
+        fetchNoteByIdThunk({ noteId: noteIdFromUrl, currentUid: user.uid })
+      )
+        .unwrap()
+        .then((note) => {
+          if (note) {
+            setTitle(note.title);
+            setContent(note.content);
+            setWordCount(note.wordCount);
+            setSymbolsCount(note.symbolsCount);
+            setTopWords(note.topWords);
+            setTone(note.tone);
 
             onUpdateMetrics({
-              wordCount: noteData.wordCount,
-              symbolsCount: noteData.symbolsCount,
-              topWords: noteData.topWords,
-              tone: noteData.tone,
+              wordCount: note.wordCount,
+              symbolsCount: note.symbolsCount,
+              topWords: note.topWords,
+              tone: note.tone,
             });
           } else {
-            setModalMessage("Document doesn't exist. Please create new.");
+            setModalMessage("Document doesn't exist or access denied.");
             openModal();
           }
-        } catch (error) {
-          console.error("Error fetching note:", error);
-        }
-      };
-
-      fetchNote();
+        })
+        .catch((error) => {
+          console.error("Error fetching note by ID:", error);
+          setModalMessage("An error occurred while fetching the note.");
+          openModal();
+        });
     }
-  }, [noteIdFromUrl, router]);
+  }, [noteIdFromUrl, dispatch]);
 
   // Main workers logic
   useEffect(() => {
