@@ -1,0 +1,27 @@
+.registerBox {
+    padding: 20px;
+    border: 2px solid #1976d2;
+    border-radius: 15px;
+    width: 500px;
+    min-height: 350px;
+
+    text-align: center;
+}
+.registerTitle {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.registerForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.emailForm, .passwordForm, .submitPasswordForm {
+    margin-bottom: 20px;
+}
+#email, #password, #submitPassword {
+    width: 340px;
+}
+.redirect {
+    color: #1976d2;
+}

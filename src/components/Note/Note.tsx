@@ -3,62 +3,88 @@
 import { Paper, Typography, Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "./Note.module.css";
+import Link from "next/link";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
-export default function Note() {
+interface NoteProps {
+  title: string;
+  content: string;
+  id: string;
+  wordCount: number;
+  topWords: string;
+  tone: string;
+  onDelete: (id: string) => void;
+}
+
+export default function Note({
+  id,
+  title,
+  content,
+  onDelete,
+  wordCount,
+  topWords,
+  tone,
+}: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const handleOpen = () => {
+  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleDelete = async () => {
+    try {
+      const docRef = doc(db, "notes", id);
+      await deleteDoc(docRef);
+      onDelete(id);
+      handleClose();
+    } catch (error) {
+      console.error("Failed to delete the note:", error);
+    }
+  };
   return (
     <>
       <Paper elevation={3} className={styles.note}>
-        <Typography className={styles.noteTitle}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure quam
-          facere ratione, alias laboriosam, ad officia delectus placeat
-          voluptates nihil similique fugiat aliquam, quibusdam exercitationem?
-          Beatae delectus autem molestiae error!
-        </Typography>
-        <hr />
-        <Typography className={styles.noteContent}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem
-          placeat blanditiis qui veritatis amet, omnis velit ea laboriosam
-          voluptate consequuntur saepe fugit consequatur quae architecto at
-          ipsum vero totam ducimus. Alias, voluptatem in eveniet enim tempora
-          dolorem perferendis doloremque molestias earum nemo laudantium iusto
-          similique dolore a beatae hic laboriosam. Quidem blanditiis eius atque
-          magni dolor ducimus quae excepturi doloribus. Molestias quam totam ea
-          quibusdam alias saepe ducimus voluptatum autem perspiciatis
-          repudiandae assumenda doloremque ut in nulla suscipit, deleniti
-          obcaecati, magnam corporis rerum minus eligendi beatae quo earum. Cum,
-          incidunt? Sunt similique, inventore numquam consequatur, fugiat
-          provident qui accusantium ipsam quis accusamus sed obcaecati
-          reiciendis recusandae asperiores animi est iusto omnis et porro.
-          Accusantium quaerat, doloribus molestias maxime blanditiis voluptate!
-          Ratione quis aliquid et voluptate saepe autem veniam id quidem amet
-          explicabo necessitatibus minus aliquam, est porro non vero laborum
-          dolorem eum. Vel architecto voluptas iusto ratione? Dignissimos, quam
-          commodi.
-        </Typography>
+        <Link className={styles.link} href={`/edit/${id}`}>
+          <Typography className={styles.noteTitle}>{title}</Typography>
+          <hr />
+          <Typography className={styles.noteContent}>{content}</Typography>
+          <hr />
+          <Box className={styles.noteTags}>
+            <Typography className={styles.noteWords}>
+              Word count: {wordCount}
+            </Typography>
+            <Typography className={styles.noteTon}>
+              Text tone: {tone}
+            </Typography>
+            <Typography className={styles.noteOften}>
+              Top words: {topWords || "No words"}
+            </Typography>
+          </Box>
+        </Link>
+
         <Box className={styles.noteButtons}>
-          <Button>Edit</Button>
-          <Button onClick={handleOpen}>Delete</Button>
+          <Link href={`/edit/${id}`}>
+            <Button>Edit</Button>
+          </Link>
+          <Button onClick={(e) => handleOpen(e)}>Delete</Button>
         </Box>
       </Paper>
+
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box>
-          <Typography>Are you sure to delete this?</Typography>
-          <Box>
-            <Button>Yes</Button>
-            <Button>No</Button>
+        <Box className={styles.deleteModal}>
+          <Typography>Are you sure to delete this note?</Typography>
+          <Box className={styles.deleteModalButtons}>
+            <Button onClick={handleDelete}>Yes</Button>
+            <Button onClick={handleClose}>No</Button>
           </Box>
         </Box>
       </Modal>
