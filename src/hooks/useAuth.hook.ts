@@ -4,7 +4,7 @@ import { setUser, clearUser } from "@/store/userSlice";
 import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
-export function useAuth() {
+export function useAuth(setLoading: (loading: boolean) => void) {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -15,8 +15,9 @@ export function useAuth() {
             } else {
                 dispatch(clearUser())
             }
+            setLoading(false);
         })
 
         return () => unsubscribe()
-    }, [dispatch])
+    }, [dispatch, setLoading])
 }

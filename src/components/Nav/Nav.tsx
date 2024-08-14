@@ -19,13 +19,15 @@ export default function Nav() {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const route = useRouter();
-  useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useAuth(setLoading);
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user.uid) {
       route.push("/login");
     }
-  }, [dispatch]);
+  }, [user.uid, route, loading]);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -62,7 +64,7 @@ export default function Nav() {
             </Link>
           </li>
           <li>
-            <Link href="/" className={styles.link}>
+            <Link href="/edit" className={styles.link}>
               <AnalyticsIcon sx={{ fontSize: 30 }} />
               Analysis
             </Link>

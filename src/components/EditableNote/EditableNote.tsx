@@ -1,4 +1,11 @@
-import { Box, TextareaAutosize, Input, Paper, Button } from "@mui/material";
+import {
+  Box,
+  TextareaAutosize,
+  Input,
+  Paper,
+  Button,
+  FormHelperText,
+} from "@mui/material";
 import styles from "./EditableNote.module.css";
 import { useRouter, useParams } from "next/navigation";
 import { db } from "@/firebaseConfig";
@@ -11,6 +18,7 @@ interface EditableNoteProps {
     wordCount: number;
     symbolsCount: number;
     topWords: string;
+    tone: string;
   }) => void;
 }
 
@@ -23,7 +31,9 @@ export default function EditableNote({
   const [wordCount, setWordCount] = useState<number>(0);
   const [symbolsCount, setSymbolsCount] = useState<number>(0);
   const [topWords, setTopWords] = useState<string>("");
-  const [emotion, setEmotion] = useState<string>("");
+  const [tone, setTone] = useState<string>("");
+  const [titleError, setTitleError] = useState<string | null>(null);
+  const [contentError, setContentError] = useState<string | null>(null);
 
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
@@ -31,7 +41,7 @@ export default function EditableNote({
   const wordWorkerRef = useRef<Worker | null>(null);
   const symbolsWorkerRef = useRef<Worker | null>(null);
   const topWordsWorkerRef = useRef<Worker | null>(null);
-  const checkEmotionWorkerRef = useRef<Worker | null>(null);
+  const checkToneWorkerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
     if (noteIdFromUrl) {
@@ -46,13 +56,13 @@ export default function EditableNote({
           setWordCount(noteData.wordCount);
           setSymbolsCount(noteData.symbolsCount);
           setTopWords(noteData.topWords);
-          setEmotion(noteData.emotion);
+          setTone(noteData.tone);
 
           onUpdateMetrics({
             wordCount: noteData.wordCount,
             symbolsCount: noteData.symbolsCount,
             topWords: noteData.topWords,
-            emotion: noteData.emotion,
+            tone: noteData.tone,
           });
         } else {
           console.log("No such document!");
@@ -76,8 +86,8 @@ export default function EditableNote({
       new URL("@/workers/topWordsCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    checkEmotionWorkerRef.current = new Worker(
-      new URL("@/workers/checkEmotionWorker.ts", import.meta.url),
+    checkToneWorkerRef.current = new Worker(
+      new URL("@/workers/checkToneWorker.ts", import.meta.url),
       { type: "module" }
     );
 
@@ -97,18 +107,18 @@ export default function EditableNote({
       }));
     };
 
-    topWordsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
+    topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
       setTopWords(e.data);
       onUpdateMetrics((prevMetrics) => ({
         ...prevMetrics,
         topWords: e.data,
       }));
     };
-    checkEmotionWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
-      setEmotion(e.data);
+    checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
+      setTone(e.data);
       onUpdateMetrics((prevMetrics) => ({
         ...prevMetrics,
-        emotion: e.data,
+        tone: e.data,
       }));
     };
 
@@ -122,8 +132,8 @@ export default function EditableNote({
       if (topWordsWorkerRef.current) {
         topWordsWorkerRef.current.terminate();
       }
-      if (checkEmotionWorkerRef.current) {
-        checkEmotionWorkerRef.current.terminate();
+      if (checkToneWorkerRef.current) {
+        checkToneWorkerRef.current.terminate();
       }
     };
   }, [onUpdateMetrics]);
@@ -135,24 +145,40 @@ export default function EditableNote({
     if (content && topWordsWorkerRef.current) {
       topWordsWorkerRef.current.postMessage(content);
     }
-    if (content && checkEmotionWorkerRef.current) {
-      checkEmotionWorkerRef.current.postMessage(content);
+    if (content && checkToneWorkerRef.current) {
+      checkToneWorkerRef.current.postMessage(content);
     }
   }, [content]);
 
   const handleSave = async () => {
-    if (!title || !content) return;
+    let hasError = false;
+    if (!title) {
+      setTitleError("Please set the title");
+      hasError = true;
+    } else {
+      setTitleError(null);
+    }
+    if (!content) {
+      setContentError("Please set the content");
+      hasError = true;
+    } else {
+      setContentError(null);
+    }
+
+    if (hasError) {
+      return;
+    }
 
     try {
       if (noteIdFromUrl) {
-        const noteRef = doc(db, "notes", noteIdFromUrl as string);
+        const noteRef = doc(db, "notes", noteIdFromUrl);
         await updateDoc(noteRef, {
           title,
           content,
           wordCount,
           symbolsCount,
           topWords,
-          emotion,
+          tone,
         });
       } else {
         await addDoc(collection(db, "notes"), {
@@ -161,7 +187,7 @@ export default function EditableNote({
           wordCount,
           symbolsCount,
           topWords,
-          emotion,
+          tone,
           createdAt: new Date(),
         });
       }
@@ -188,10 +214,11 @@ export default function EditableNote({
     if (topWordsWorkerRef.current) {
       topWordsWorkerRef.current.postMessage(e.target.value);
     }
-    if (checkEmotionWorkerRef.current) {
-      checkEmotionWorkerRef.current.postMessage(e.target.value);
+    if (checkToneWorkerRef.current) {
+      checkToneWorkerRef.current.postMessage(e.target.value);
     }
   };
+
   return (
     <Paper className={styles.editableNote}>
       <Input
@@ -199,7 +226,9 @@ export default function EditableNote({
         placeholder="Note Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        error={!!titleError}
       />
+      {titleError && <FormHelperText error>{titleError}</FormHelperText>}
       <hr />
       <TextareaAutosize
         minRows="35"
@@ -208,6 +237,7 @@ export default function EditableNote({
         value={content}
         onChange={handleContentChange}
       />
+      {contentError && <FormHelperText error>{contentError}</FormHelperText>}
       <Box className={styles.editableNoteButtons}>
         <Button onClick={handleSave} className={styles.editableNoteSave}>
           Save

@@ -1,12 +1,12 @@
-function checkEmotion(text: string) {
+function checkTone(text: string) {
     text = text.trim();
-    let emotion = 'Neutral'
+    let tone = 'Neutral'
     let counter = 0;
     if (text.length === 0) {
         return '';
     }
-    const badWords = new Set(['дебил', 'ублюдок', 'лох']);
-    const goodWords = new Set(['прекрасный', 'великолепный', 'лучший']);
+    const badWords = new Set(['дебил', 'ублюдок', 'лох', 'bitch', 'ass', 'nigger']);
+    const goodWords = new Set(['прекрасный', 'великолепный', 'лучший', 'beautiful', 'amazing']);
 
     const cleanedText = text.replace(/[^а-яА-ЯёЁa-zA-Z]+/g, ' ').trim();
 
@@ -21,17 +21,17 @@ function checkEmotion(text: string) {
     })
 
     if (counter > 0) {
-        emotion = 'Positive';
+        tone = 'Positive';
     } else if (counter < 0) {
-        emotion = 'Negative'
+        tone = 'Negative'
     }
 
-    return emotion;
+    return tone;
 }
 
 self.addEventListener('message', (e: MessageEvent<string>) => {
     const text = e.data;
-    const emotion = checkEmotion(text)
+    const tone = checkTone(text)
 
-    self.postMessage(emotion)
+    self.postMessage(tone)
 })

@@ -6,30 +6,30 @@ interface AnalysisProps {
   wordCount: number;
   symbolsCount: number;
   topWords: string;
-  emotion: string;
+  tone: string;
 }
 
 export default function Analysis({
   wordCount,
   symbolsCount,
   topWords,
-  emotion,
+  tone,
 }: AnalysisProps) {
   useEffect(() => {});
   return (
     <Box className={styles.analysis}>
       <Paper className={styles.analysisItems}>
         <Typography className={styles.analysisWords}>
-          Количество слов: {wordCount}
+          Word count: {wordCount}
         </Typography>
         <Typography className={styles.analysisSymbols}>
-          Количество символов: {symbolsCount}
+          Symbols count: {symbolsCount}
         </Typography>
         <Typography className={styles.analysisOften}>
-          Повторяющиеся слова: {topWords}
+          Top words: {topWords}
         </Typography>
-        <Typography className={styles.analysisEmotion}>
-          Эмоциональная окраска текста: {emotion}
+        <Typography className={styles.analysisTone}>
+          Text tone: {tone}
         </Typography>
       </Paper>
     </Box>

@@ -13,7 +13,7 @@ interface Note {
   content: string;
   wordCount: number;
   topWords: string;
-  emotion: string;
+  tone: string;
 }
 
 export default function NoteList() {
@@ -46,7 +46,7 @@ export default function NoteList() {
           content={note.content}
           wordCount={note.wordCount}
           topWords={note.topWords}
-          emotion={note.emotion}
+          tone={note.tone}
           onDelete={handleDelete}
         />
       ))}
