@@ -133,8 +133,8 @@ export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<No
     sharedWith = userData.sharedUsers || [];
   }
 
-  const docRef = await addDoc(collection(db, 'notes'), { ...newNote, sharedWith });
-  const addedNote = { id: docRef.id, ...newNote, sharedWith };
+  const docRef = await addDoc(collection(db, 'notes'), { ...newNote, sharedWith, createdAt: newNote.createdAt.toString()});
+  const addedNote = { id: docRef.id, ...newNote, sharedWith, createdAt: newNote.createdAt.toString()};
   return addedNote;
 });
   
@@ -142,7 +142,7 @@ export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<No
     const docRef = doc(db, 'notes', updatedNote.id);
     await updateDoc(docRef, {
         ...updatedNote,
-        createdAt: updatedNote.createdAt.toString() // или .toDate().toString()
+        createdAt: updatedNote.createdAt.toString()
     });
     return updatedNote;
   });
