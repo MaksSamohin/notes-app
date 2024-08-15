@@ -37,7 +37,7 @@ export default function Nav({ setSearchText }: NavProps) {
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [isHomePage, setIsHomepage] = useState(false);
-  console.log(user);
+
   useAuth(setLoading);
 
   useEffect(() => {

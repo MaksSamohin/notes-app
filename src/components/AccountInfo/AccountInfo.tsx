@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { fetchUserData } from "@/store/userSlice";
 import { useEffect, useState } from "react";
 import { updateUserNameInDB, deleteAllUserNotes } from "@/store/userSlice";
-import { fetchNotes } from "@/store/noteSlice";
+import { fetchNotes, shareAllNotesWithUser } from "@/store/noteSlice";
 
 export default function AccountInfo() {
   const dispatch = useAppDispatch();
@@ -15,6 +15,7 @@ export default function AccountInfo() {
     user.displayName || ""
   );
   const [open, setOpen] = useState<boolean>(false);
+  const [friendEmail, setFriendEmail] = useState<string>("");
 
   useEffect(() => {
     if (user.displayName !== null) {
@@ -50,6 +51,13 @@ export default function AccountInfo() {
     setOpen(false);
   };
 
+  const handleShareAllNotes = async () => {
+    if (user.uid && friendEmail.trim()) {
+      dispatch(shareAllNotesWithUser({ uid: user.uid, email: friendEmail }));
+      setFriendEmail("");
+    }
+  };
+
   return (
     <>
       <Box className={styles.accountInfo}>
@@ -71,8 +79,12 @@ export default function AccountInfo() {
         </Box>
         <Box className={styles.shareNotes}>
           <Typography>You can share your notes with friends</Typography>
-          <Input placeholder={"Set the friend's email"} />
-          <Button>Add</Button>
+          <Input
+            onChange={(e) => setFriendEmail(e.target.value)}
+            value={friendEmail}
+            placeholder={"Set the friend's email"}
+          />
+          <Button onClick={handleShareAllNotes}>Add</Button>
         </Box>
       </Box>
 

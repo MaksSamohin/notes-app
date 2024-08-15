@@ -6,6 +6,7 @@ import styles from "./Note.module.css";
 import Link from "next/link";
 import { deleteNote } from "@/store/noteSlice";
 import { useAppDispatch } from "@/store/store";
+import { useSelector } from "react-redux";
 
 interface NoteProps {
   title: string;
@@ -15,6 +16,9 @@ interface NoteProps {
   topWords: string;
   tone: string;
   onDelete: (id: string) => void;
+  sharedWith?: string[];
+  ownerId: string;
+  currentUserId: string;
 }
 
 export default function Note({
@@ -25,6 +29,9 @@ export default function Note({
   wordCount,
   topWords,
   tone,
+  sharedWith,
+  ownerId,
+  currentUserId,
 }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -35,7 +42,6 @@ export default function Note({
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleDelete = async () => {
     try {
       await dispatch(deleteNote(id)).unwrap();
@@ -66,12 +72,14 @@ export default function Note({
           </Box>
         </Link>
 
-        <Box className={styles.noteButtons}>
-          <Link href={`/edit/${id}`}>
-            <Button>Edit</Button>
-          </Link>
-          <Button onClick={(e) => handleOpen(e)}>Delete</Button>
-        </Box>
+        {ownerId === currentUserId && (
+          <Box className={styles.noteButtons}>
+            <Link href={`/edit/${id}`}>
+              <Button>Edit</Button>
+            </Link>
+            <Button onClick={(e) => handleOpen(e)}>Delete</Button>
+          </Box>
+        )}
       </Paper>
 
       <Modal

@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from '@/firebaseConfig';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query, where, getDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query, where, getDoc, writeBatch } from 'firebase/firestore';
 import { Note } from "@/noteTypes";
+import { RootState } from "./store";
 
 interface NotesState {
     notes: Note[];
@@ -65,11 +66,77 @@ export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string
   }
 );
 
-export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<Note, 'id'>) => {
-    const docRef = await addDoc(collection(db, 'notes'), newNote);
-    const addedNote = { id: docRef.id, ...newNote };
-    return addedNote;
-  });
+export const shareAllNotesWithUser = createAsyncThunk(
+  'notes/shareAllNotesWithUser',
+  async ({ uid, email }: { uid: string, email: string }, { getState, rejectWithValue }) => {
+    try {
+      const userDocRef = doc(db, "users", uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const sharedUsers = userData.sharedUsers || [];
+
+          if (!sharedUsers.includes(email)) {
+          sharedUsers.push(email);
+          await updateDoc(userDocRef, { sharedUsers });
+        }
+
+        const q = query(collection(db, 'notes'), where('uid', '==', uid));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+
+        querySnapshot.forEach((doc) => {
+          const noteData = doc.data();
+          const updatedSharedWith = noteData.sharedWith ? [...noteData.sharedWith, email] : [email];
+
+          batch.update(doc.ref, { sharedWith: updatedSharedWith });
+        });
+
+        await batch.commit();
+        return email;
+      } else {
+        throw new Error("User not found");
+      }
+    } catch (error) {
+      return rejectWithValue("Failed to share all notes");
+    }
+  }
+);
+
+export const fetchSharedNotes = createAsyncThunk<Note[], string>('notes/fetchSharedNotes', async (email: string) => {
+  const q = query(collection(db, 'notes'), where('sharedWith', 'array-contains', email));
+  const querySnapshot = await getDocs(q);
+  const notesData = querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: data.createdAt.toString()
+    };
+  }) as Note[];
+  return notesData;
+});
+
+export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<Note, 'id'>, { getState }) => {
+  const state = getState() as RootState;
+  const currentUser = state.user;
+  
+  const userDocRef = doc(db, "users", currentUser.uid);
+  const userDoc = await getDoc(userDocRef);
+
+  let sharedWith = [];
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    sharedWith = userData.sharedUsers || [];
+  }
+
+  const docRef = await addDoc(collection(db, 'notes'), { ...newNote, sharedWith });
+  const addedNote = { id: docRef.id, ...newNote, sharedWith };
+  return addedNote;
+});
   
   export const updateNote = createAsyncThunk('notes/updateNote', async (updatedNote: Note) => {
     const docRef = doc(db, 'notes', updatedNote.id);
@@ -131,6 +198,12 @@ export const noteSlice = createSlice({
   
       builder.addCase(deleteNote.fulfilled, (state, action: PayloadAction<string>) => {
         state.notes = state.notes.filter((note) => note.id !== action.payload);
+      });
+      builder.addCase(shareAllNotesWithUser.fulfilled, (state, action) => {
+        const email = action.payload;
+        state.notes.forEach(note => {
+          note.sharedWith = note.sharedWith ? [...note.sharedWith, email] : [email];
+        });
       });
     },
   });
