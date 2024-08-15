@@ -241,7 +241,7 @@ export default function EditableNote({
               topWords,
               tone,
               uid,
-              createdAt: new Date(),
+              createdAt: new Date().toString(),
             })
           ).unwrap();
         } else {
@@ -254,7 +254,7 @@ export default function EditableNote({
               topWords,
               tone,
               uid,
-              createdAt: new Date(),
+              createdAt: new Date().toString(),
             })
           ).unwrap();
         }

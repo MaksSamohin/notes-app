@@ -7,5 +7,5 @@ export interface Note {
     topWords: string;
     tone: string;
     uid: string;
-    createdAt: Date;
+    createdAt: string;
   }
