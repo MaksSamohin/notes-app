@@ -4,7 +4,7 @@ import Nav from "@/components/Nav/Nav";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import styles from "./page.module.css";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import EditableNote from "@/components/EditableNote/EditableNote";
 import Analysis from "@/components/Analysis/Analysis";
 import { useState } from "react";

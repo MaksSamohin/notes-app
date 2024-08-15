@@ -16,14 +16,16 @@ interface Note {
   topWords: string;
   tone: string;
 }
-
-export default function NoteList() {
+interface NoteListProps {
+  searchText: string;
+}
+export default function NoteList({ searchText }: NoteListProps) {
   const dispatch = useAppDispatch();
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const user = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(true);
   const [userLoading, setUserLoading] = useState(true);
-
+  console.log(searchText);
   useEffect(() => {
     if (!user.uid) {
       setUserLoading(true);
@@ -55,18 +57,24 @@ export default function NoteList() {
 
   return (
     <Box className={styles.noteList}>
-      {notes.map((note) => (
-        <Note
-          key={note.id}
-          id={note.id}
-          title={note.title}
-          content={note.content}
-          wordCount={note.wordCount}
-          topWords={note.topWords}
-          tone={note.tone}
-          onDelete={handleDelete}
-        />
-      ))}
+      {notes
+        .filter(
+          (note) =>
+            note.title.toLowerCase().includes(searchText) ||
+            note.content.toLowerCase().includes(searchText)
+        )
+        .map((note) => (
+          <Note
+            key={note.id}
+            id={note.id}
+            title={note.title}
+            content={note.content}
+            wordCount={note.wordCount}
+            topWords={note.topWords}
+            tone={note.tone}
+            onDelete={handleDelete}
+          />
+        ))}
       <Link href="/edit">
         <Button className={styles.addNote}>
           <AddCircleOutline sx={{ fontSize: 40 }} />

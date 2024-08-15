@@ -2,7 +2,6 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query, where, getDoc } from 'firebase/firestore';
 import { Note } from "@/noteTypes";
-import { create } from "domain";
 
 interface NotesState {
     notes: Note[];

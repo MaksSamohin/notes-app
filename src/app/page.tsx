@@ -6,14 +6,16 @@ import styles from "./page.module.css";
 import NoteList from "@/components/NoteList/NoteList";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import { useState } from "react";
 
 export default function Home() {
+  const [searchText, setSearchText] = useState<string>("");
   return (
     <Provider store={store}>
       <Box component="main" className={styles.main}>
-        <Nav />
+        <Nav setSearchText={setSearchText} />
         <Box>
-          <NoteList />
+          <NoteList searchText={searchText} />
         </Box>
       </Box>
     </Provider>

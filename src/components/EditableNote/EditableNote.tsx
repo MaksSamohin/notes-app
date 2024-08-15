@@ -10,11 +10,9 @@ import {
 } from "@mui/material";
 import styles from "./EditableNote.module.css";
 import { useRouter, useParams } from "next/navigation";
-import { db, auth } from "@/firebaseConfig";
-import { addDoc, collection, updateDoc, doc, getDoc } from "firebase/firestore";
+import { auth } from "@/firebaseConfig";
 import { useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { fetchNoteByIdThunk } from "@/store/noteSlice";
+import { fetchNoteByIdThunk, addNote, updateNote } from "@/store/noteSlice";
 import { useAppDispatch } from "@/store/store";
 
 interface EditableNoteProps {
@@ -68,7 +66,7 @@ export default function EditableNote({
       const user = auth.currentUser;
 
       if (!user) {
-        setModalMessage("User is not authorized");
+        setModalMessage("Access was denied");
         openModal();
         return;
       }
@@ -98,7 +96,6 @@ export default function EditableNote({
           }
         })
         .catch((error) => {
-          console.error("Error fetching note by ID:", error);
           setModalMessage("An error occurred while fetching the note.");
           openModal();
         });
@@ -211,34 +208,39 @@ export default function EditableNote({
         const user = auth.currentUser;
 
         if (!user) {
-          setModalMessage("User is not authorized");
+          setModalMessage("Document doesn't exist or access denied.");
           openModal();
           return;
         }
         const uid = user.uid;
 
         if (noteIdFromUrl) {
-          const noteRef = doc(db, "notes", noteIdFromUrl);
-          await updateDoc(noteRef, {
-            title,
-            content,
-            wordCount,
-            symbolsCount,
-            topWords,
-            tone,
-            uid,
-          });
+          await dispatch(
+            updateNote({
+              id: noteIdFromUrl,
+              title,
+              content,
+              wordCount,
+              symbolsCount,
+              topWords,
+              tone,
+              uid,
+              createdAt: new Date(),
+            })
+          ).unwrap();
         } else {
-          await addDoc(collection(db, "notes"), {
-            title,
-            content,
-            wordCount,
-            symbolsCount,
-            topWords,
-            tone,
-            createdAt: new Date(),
-            uid,
-          });
+          await dispatch(
+            addNote({
+              title,
+              content,
+              wordCount,
+              symbolsCount,
+              topWords,
+              tone,
+              uid,
+              createdAt: new Date(),
+            })
+          ).unwrap();
         }
         router.push("/");
       } catch (error) {

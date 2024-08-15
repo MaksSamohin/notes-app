@@ -1,4 +1,12 @@
-import { AppBar, Container, Button, Menu, MenuItem } from "@mui/material";
+import {
+  AppBar,
+  Container,
+  Button,
+  Menu,
+  MenuItem,
+  Input,
+  Box,
+} from "@mui/material";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,19 +21,33 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
+import SearchIcon from "@mui/icons-material/Search";
+import { usePathname } from "next/navigation";
 
-export default function Nav() {
+interface NavProps {
+  setSearchText: (text: string) => void;
+}
+
+export default function Nav({ setSearchText }: NavProps) {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const route = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
+  const [isHomePage, setIsHomepage] = useState(false);
 
   useAuth(setLoading);
 
   useEffect(() => {
     if (!loading && !user.uid) {
       route.push("/login");
+    }
+
+    if (pathname === "/") {
+      setIsHomepage(true);
+    } else {
+      setIsHomepage(false);
     }
   }, [user.uid, route, loading]);
 
@@ -70,6 +92,17 @@ export default function Nav() {
             </Link>
           </li>
         </ul>
+        {isHomePage && (
+          <Box className={styles.searchField}>
+            <SearchIcon sx={{ fontSize: 35 }} />
+            <Input
+              className={styles.searchInput}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Find the note"
+            />
+          </Box>
+        )}
+
         <Button onClick={handleMenuOpen} className={styles.emailButton}>
           <AccountCircleIcon sx={{ fontSize: 40 }} />
           {user ? user.email : ""}
@@ -79,6 +112,9 @@ export default function Nav() {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
+          <Link href="/personalcabinet">
+            <MenuItem>Personal cabinet</MenuItem>
+          </Link>
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
         </Menu>
       </Container>
