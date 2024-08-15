@@ -24,7 +24,7 @@ export const fetchNotes = createAsyncThunk<Note[], string>('notes/fetchNotes', a
       return {
         id: doc.id,
         ...data,
-        createdAt: data.createdAt.toString() 
+        createdAt: data.createdAt.toString()
       };
     }) as Note[];
     return notesData;
@@ -40,7 +40,6 @@ export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string
           if (docSnap.exists()) {
               const noteData = docSnap.data();
               if (noteData.uid !== currentUid) {
-                  console.log("Access denied: user does not own this note.");
                   return null;
               }
 

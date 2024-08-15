@@ -94,12 +94,6 @@ export default function Nav({ setSearchText }: NavProps) {
           </Link>
         </ListItem>
         <ListItem>
-          <Link href="/edit" className={styles.link}>
-            <AnalyticsIcon sx={{ fontSize: 45 }} />
-            Analysis
-          </Link>
-        </ListItem>
-        <ListItem>
           <Link className={styles.link} href="/personalcabinet">
             <AccountCircleIcon sx={{ fontSize: 45 }} />
             Personal cabinet
@@ -152,12 +146,6 @@ export default function Nav({ setSearchText }: NavProps) {
               <Link href="/edit" className={styles.link}>
                 <EditNoteIcon sx={{ fontSize: 45 }} />
                 Add/Edit
-              </Link>
-            </li>
-            <li>
-              <Link href="/edit" className={styles.link}>
-                <AnalyticsIcon sx={{ fontSize: 30 }} />
-                Analysis
               </Link>
             </li>
           </ul>

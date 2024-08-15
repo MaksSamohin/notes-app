@@ -13,8 +13,6 @@ import { useState } from "react";
 export default function Edit() {
   const { id } = useParams();
 
-  console.log("Router ID:", id);
-
   const [metrics, setMetrics] = useState<{
     wordCount: number;
     symbolsCount: number;
