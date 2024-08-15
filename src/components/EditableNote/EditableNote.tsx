@@ -126,63 +126,47 @@ export default function EditableNote({
     );
 
     wordWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
-      setWordCount(e.data);
-      onUpdateMetrics(
-        (prevMetrics: {
-          wordCount: number;
-          symbolsCount: number;
-          topWords: string;
-          tone: string;
-        }) => ({
-          ...prevMetrics,
-          wordCount: e.data,
-        })
-      );
+      const newWordCount = e.data;
+      setWordCount(newWordCount);
+      onUpdateMetrics({
+        wordCount: newWordCount,
+        symbolsCount: symbolsCount,
+        topWords: topWords,
+        tone: tone,
+      });
     };
 
     symbolsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
-      setSymbolsCount(e.data);
-      onUpdateMetrics(
-        (prevMetrics: {
-          wordCount: number;
-          symbolsCount: number;
-          topWords: string;
-          tone: string;
-        }) => ({
-          ...prevMetrics,
-          symbolsCount: e.data,
-        })
-      );
+      const newSymbolsCount = e.data;
+      setSymbolsCount(newSymbolsCount);
+      onUpdateMetrics({
+        wordCount: wordCount,
+        symbolsCount: newSymbolsCount,
+        topWords: topWords,
+        tone: tone,
+      });
     };
 
     topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
-      setTopWords(e.data);
-      onUpdateMetrics(
-        (prevMetrics: {
-          wordCount: number;
-          symbolsCount: number;
-          topWords: string;
-          tone: string;
-        }) => ({
-          ...prevMetrics,
-          topWords: e.data,
-        })
-      );
+      const newTopWords = e.data;
+      setTopWords(newTopWords);
+      onUpdateMetrics({
+        wordCount: wordCount,
+        symbolsCount: symbolsCount,
+        topWords: newTopWords,
+        tone: tone,
+      });
     };
 
     checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
-      setTone(e.data);
-      onUpdateMetrics(
-        (prevMetrics: {
-          wordCount: number;
-          symbolsCount: number;
-          topWords: string;
-          tone: string;
-        }) => ({
-          ...prevMetrics,
-          tone: e.data,
-        })
-      );
+      const newTone = e.data;
+      setTone(newTone);
+      onUpdateMetrics({
+        wordCount: wordCount,
+        symbolsCount: symbolsCount,
+        topWords: topWords,
+        tone: newTone,
+      });
     };
 
     return () => {
