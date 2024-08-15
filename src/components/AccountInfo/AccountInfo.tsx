@@ -46,8 +46,8 @@ export default function AccountInfo() {
   const handleDeleteAllNotes = async () => {
     if (user.uid) {
       await deleteAllUserNotes(user.uid);
+      dispatch(fetchNotes(user.uid));
     }
-    dispatch(fetchNotes(user.uid));
     setOpen(false);
   };
 
