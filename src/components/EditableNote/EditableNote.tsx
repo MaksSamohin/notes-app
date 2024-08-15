@@ -105,33 +105,29 @@ export default function EditableNote({
 
   // Main workers logic
   useEffect(() => {
-    wordWorkerRef.current = new Worker(
+    const wordWorker = new Worker(
       new URL("@/workers/wordCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-
-    symbolsWorkerRef.current = new Worker(
+    const symbolsWorker = new Worker(
       new URL("@/workers/symbolsCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    topWordsWorkerRef.current = new Worker(
+    const topWordsWorker = new Worker(
       new URL("@/workers/topWordsCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    checkToneWorkerRef.current = new Worker(
+    const checkToneWorker = new Worker(
       new URL("@/workers/checkToneWorker.ts", import.meta.url),
       { type: "module" }
     );
 
-    wordWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
+    wordWorker.onmessage = (e: MessageEvent<number>) => {
       setWordCount(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        wordCount: e.data,
-      }));
+      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, wordCount: e.data }));
     };
 
-    symbolsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
+    symbolsWorker.onmessage = (e: MessageEvent<number>) => {
       setSymbolsCount(e.data);
       onUpdateMetrics((prevMetrics) => ({
         ...prevMetrics,
@@ -139,34 +135,21 @@ export default function EditableNote({
       }));
     };
 
-    topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
+    topWordsWorker.onmessage = (e: MessageEvent<string>) => {
       setTopWords(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        topWords: e.data,
-      }));
+      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, topWords: e.data }));
     };
-    checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
+
+    checkToneWorker.onmessage = (e: MessageEvent<string>) => {
       setTone(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        tone: e.data,
-      }));
+      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, tone: e.data }));
     };
 
     return () => {
-      if (wordWorkerRef.current) {
-        wordWorkerRef.current.terminate();
-      }
-      if (symbolsWorkerRef.current) {
-        symbolsWorkerRef.current.terminate();
-      }
-      if (topWordsWorkerRef.current) {
-        topWordsWorkerRef.current.terminate();
-      }
-      if (checkToneWorkerRef.current) {
-        checkToneWorkerRef.current.terminate();
-      }
+      wordWorker.terminate();
+      symbolsWorker.terminate();
+      topWordsWorker.terminate();
+      checkToneWorker.terminate();
     };
   }, [onUpdateMetrics]);
 
@@ -186,7 +169,6 @@ export default function EditableNote({
   // Save button logic
   const handleSave = async () => {
     if (!isSaved) {
-      setIsSaved(true);
       let hasError = false;
       if (!title) {
         setTitleError("Please set the title");
@@ -204,6 +186,9 @@ export default function EditableNote({
       if (hasError) {
         return;
       }
+
+      setIsSaved(true);
+
       // Updating or creating notes collection
       try {
         const user = auth.currentUser;
@@ -287,7 +272,7 @@ export default function EditableNote({
         {titleError && <FormHelperText error>{titleError}</FormHelperText>}
         <hr />
         <TextareaAutosize
-          minRows="35"
+          minRows={35}
           className={styles.editableNoteText}
           placeholder="Note Content"
           value={content}
