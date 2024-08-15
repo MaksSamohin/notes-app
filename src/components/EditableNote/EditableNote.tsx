@@ -105,29 +105,33 @@ export default function EditableNote({
 
   // Main workers logic
   useEffect(() => {
-    const wordWorker = new Worker(
+    wordWorkerRef.current = new Worker(
       new URL("@/workers/wordCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    const symbolsWorker = new Worker(
+
+    symbolsWorkerRef.current = new Worker(
       new URL("@/workers/symbolsCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    const topWordsWorker = new Worker(
+    topWordsWorkerRef.current = new Worker(
       new URL("@/workers/topWordsCountWorker.ts", import.meta.url),
       { type: "module" }
     );
-    const checkToneWorker = new Worker(
+    checkToneWorkerRef.current = new Worker(
       new URL("@/workers/checkToneWorker.ts", import.meta.url),
       { type: "module" }
     );
 
-    wordWorker.onmessage = (e: MessageEvent<number>) => {
+    wordWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
       setWordCount(e.data);
-      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, wordCount: e.data }));
+      onUpdateMetrics((prevMetrics) => ({
+        ...prevMetrics,
+        wordCount: e.data,
+      }));
     };
 
-    symbolsWorker.onmessage = (e: MessageEvent<number>) => {
+    symbolsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
       setSymbolsCount(e.data);
       onUpdateMetrics((prevMetrics) => ({
         ...prevMetrics,
@@ -135,21 +139,34 @@ export default function EditableNote({
       }));
     };
 
-    topWordsWorker.onmessage = (e: MessageEvent<string>) => {
+    topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
       setTopWords(e.data);
-      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, topWords: e.data }));
+      onUpdateMetrics((prevMetrics) => ({
+        ...prevMetrics,
+        topWords: e.data,
+      }));
     };
-
-    checkToneWorker.onmessage = (e: MessageEvent<string>) => {
+    checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
       setTone(e.data);
-      onUpdateMetrics((prevMetrics) => ({ ...prevMetrics, tone: e.data }));
+      onUpdateMetrics((prevMetrics) => ({
+        ...prevMetrics,
+        tone: e.data,
+      }));
     };
 
     return () => {
-      wordWorker.terminate();
-      symbolsWorker.terminate();
-      topWordsWorker.terminate();
-      checkToneWorker.terminate();
+      if (wordWorkerRef.current) {
+        wordWorkerRef.current.terminate();
+      }
+      if (symbolsWorkerRef.current) {
+        symbolsWorkerRef.current.terminate();
+      }
+      if (topWordsWorkerRef.current) {
+        topWordsWorkerRef.current.terminate();
+      }
+      if (checkToneWorkerRef.current) {
+        checkToneWorkerRef.current.terminate();
+      }
     };
   }, [onUpdateMetrics]);
 
@@ -169,6 +186,7 @@ export default function EditableNote({
   // Save button logic
   const handleSave = async () => {
     if (!isSaved) {
+      setIsSaved(true);
       let hasError = false;
       if (!title) {
         setTitleError("Please set the title");
@@ -186,9 +204,6 @@ export default function EditableNote({
       if (hasError) {
         return;
       }
-
-      setIsSaved(true);
-
       // Updating or creating notes collection
       try {
         const user = auth.currentUser;
