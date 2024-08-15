@@ -25,7 +25,6 @@ export default function NoteList({ searchText }: NoteListProps) {
   const user = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(true);
   const [userLoading, setUserLoading] = useState(true);
-  console.log(searchText);
   useEffect(() => {
     if (!user.uid) {
       setUserLoading(true);

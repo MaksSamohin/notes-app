@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
+import { RootState, useAppDispatch } from "@/store/store";
 import { clearUser } from "@/store/userSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
@@ -23,6 +23,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import SearchIcon from "@mui/icons-material/Search";
 import { usePathname } from "next/navigation";
+import { fetchUserData } from "@/store/userSlice";
 
 interface NavProps {
   setSearchText: (text: string) => void;
@@ -30,13 +31,13 @@ interface NavProps {
 
 export default function Nav({ setSearchText }: NavProps) {
   const user = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const route = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [isHomePage, setIsHomepage] = useState(false);
-
+  console.log(user);
   useAuth(setLoading);
 
   useEffect(() => {
@@ -48,6 +49,9 @@ export default function Nav({ setSearchText }: NavProps) {
       setIsHomepage(true);
     } else {
       setIsHomepage(false);
+    }
+    if (user.uid) {
+      dispatch(fetchUserData(user.uid));
     }
   }, [user.uid, route, loading]);
 
@@ -105,14 +109,14 @@ export default function Nav({ setSearchText }: NavProps) {
 
         <Button onClick={handleMenuOpen} className={styles.emailButton}>
           <AccountCircleIcon sx={{ fontSize: 40 }} />
-          {user ? user.email : ""}
+          {user.displayName ? user.displayName : user.email}
         </Button>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <Link href="/personalcabinet">
+          <Link className={styles.personalcabinetLink} href="/personalcabinet">
             <MenuItem>Personal cabinet</MenuItem>
           </Link>
           <MenuItem onClick={handleLogout}>Log out</MenuItem>

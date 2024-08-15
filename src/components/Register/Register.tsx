@@ -12,9 +12,10 @@ import {
 import React, { useState } from "react";
 import styles from "./Register.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebaseConfig";
+import { auth, db } from "@/firebaseConfig";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -81,7 +82,14 @@ export default function Register() {
           email,
           password
         );
-        console.log("User registered:", userCredential.user);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          displayName: "",
+        });
+
         router.push("/");
       } catch (error: any) {
         setEmailError("Email is unavailable");
