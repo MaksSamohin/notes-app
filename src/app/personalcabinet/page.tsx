@@ -8,10 +8,12 @@ import { Box } from "@mui/material";
 import AccountInfo from "@/components/AccountInfo/AccountInfo";
 
 export default function Edit() {
+  const setSearchText = (text: string) => {};
+
   return (
     <Provider store={store}>
       <Box component="main" className={styles.main}>
-        <Nav />
+        <Nav setSearchText={setSearchText} />
         <AccountInfo />
       </Box>
     </Provider>

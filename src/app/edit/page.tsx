@@ -10,6 +10,7 @@ import Analysis from "@/components/Analysis/Analysis";
 import { useState } from "react";
 
 export default function Edit() {
+  const setSearchText = (text: string) => {};
   const [metrics, setMetrics] = useState<{
     wordCount: number;
     symbolsCount: number;
@@ -33,7 +34,7 @@ export default function Edit() {
   return (
     <Provider store={store}>
       <Box component="main" className={styles.main}>
-        <Nav />
+        <Nav setSearchText={setSearchText} />
         <Box className={styles.notesInfo}>
           <EditableNote onUpdateMetrics={handleUpdateMetrics} />
           <Analysis

@@ -11,6 +11,7 @@ import Analysis from "@/components/Analysis/Analysis";
 import { useState } from "react";
 
 export default function Edit() {
+  const setSearchText = (text: string) => {};
   const { id } = useParams();
 
   const [metrics, setMetrics] = useState<{
@@ -37,7 +38,7 @@ export default function Edit() {
   return (
     <Provider store={store}>
       <Box component="main" className={styles.main}>
-        <Nav />
+        <Nav setSearchText={setSearchText} />
         <Box className={styles.notesInfo}>
           <EditableNote noteId={id} onUpdateMetrics={handleUpdateMetrics} />
           <Analysis
