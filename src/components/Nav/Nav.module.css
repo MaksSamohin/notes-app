@@ -4,6 +4,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     height: 90px;
+    z-index: 1500;
 }
 .linkList {
     list-style: none;
@@ -55,4 +56,71 @@
 .personalcabinetLink {
     text-decoration: none;
     color: inherit;
+}
+
+.drawerBox {
+    background-color: white;
+    width: 100dvw;
+    height: 100dvh;
+    margin-top: 10px;
+}
+.drawerBoxList {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.emailDisplayText {
+    font-family: 'Roboto_Mono', sans-serif;
+}
+.mobileMenu {
+    display: none;
+}
+@media screen and (max-width: 1100px) {
+    .bar {
+        height: 120px;
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between;
+    }
+    .emailDisplayText {
+        display: none;
+    }
+}
+@media screen and (max-width: 768px) {
+    .bar {
+        height: 120px;
+    }
+    .linkList {
+        display: none;
+    }
+    .link {
+        color: #1976d2;
+        display: flex;
+        gap: 20px;
+    }
+    .emailButton {
+        display: none;
+    }
+    .drawerBoxItem {
+        display: flex;
+        gap: 50px;
+    }
+    .searchField {
+        margin: 0 15px;
+        width: 100%;
+        justify-content: center;
+    }
+    .searchInput {
+        width: 70%;
+    }
+    .mobileMenu {
+        display: block;
+    }
+}
+@media screen and (max-width: 360px) {
+    .searchIcon {
+        display: none;
+    }
+   
 }

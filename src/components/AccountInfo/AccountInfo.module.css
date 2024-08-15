@@ -52,3 +52,15 @@
 
     color: black;
 }
+
+@media screen and (max-width: 768px) {
+    .accountName, .accountEmail, .accountNotes, .shareNotes  {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px 0;
+        border-top: 1px solid #1976d2;
+        border-bottom: 1px solid #1976d2;
+    }
+    
+}
