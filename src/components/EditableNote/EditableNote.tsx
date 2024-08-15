@@ -63,42 +63,43 @@ export default function EditableNote({
 
   useEffect(() => {
     if (noteIdFromUrl && typeof noteIdFromUrl === "string") {
-      const user = auth.currentUser;
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          dispatch(
+            fetchNoteByIdThunk({ noteId: noteIdFromUrl, currentUid: user.uid })
+          )
+            .unwrap()
+            .then((note) => {
+              if (note) {
+                setTitle(note.title);
+                setContent(note.content);
+                setWordCount(note.wordCount);
+                setSymbolsCount(note.symbolsCount);
+                setTopWords(note.topWords);
+                setTone(note.tone);
 
-      if (!user) {
-        setModalMessage("Access was denied");
-        openModal();
-        return;
-      }
-
-      dispatch(
-        fetchNoteByIdThunk({ noteId: noteIdFromUrl, currentUid: user.uid })
-      )
-        .unwrap()
-        .then((note) => {
-          if (note) {
-            setTitle(note.title);
-            setContent(note.content);
-            setWordCount(note.wordCount);
-            setSymbolsCount(note.symbolsCount);
-            setTopWords(note.topWords);
-            setTone(note.tone);
-
-            onUpdateMetrics({
-              wordCount: note.wordCount,
-              symbolsCount: note.symbolsCount,
-              topWords: note.topWords,
-              tone: note.tone,
+                onUpdateMetrics({
+                  wordCount: note.wordCount,
+                  symbolsCount: note.symbolsCount,
+                  topWords: note.topWords,
+                  tone: note.tone,
+                });
+              } else {
+                setModalMessage("Document doesn't exist or access denied.");
+                openModal();
+              }
+            })
+            .catch(() => {
+              setModalMessage("An error occurred while fetching the note.");
+              openModal();
             });
-          } else {
-            setModalMessage("Document doesn't exist or access denied.");
-            openModal();
-          }
-        })
-        .catch((error) => {
-          setModalMessage("An error occurred while fetching the note.");
+        } else {
+          setModalMessage("Access was denied");
           openModal();
-        });
+        }
+      });
+
+      return () => unsubscribe();
     }
   }, [noteIdFromUrl, dispatch]);
 

@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 40%;
+    min-width: 50%;
     padding: 20px;
 }
 .editableNoteTitle {
@@ -47,4 +47,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+    .notesInfo {
+        flex-direction: column;
+    }
 }
