@@ -17,6 +17,7 @@ interface Note {
   tone: string;
   sharedWith?: string[];
   uid: string;
+  createdAt: string;
 }
 interface NoteListProps {
   searchText: string;

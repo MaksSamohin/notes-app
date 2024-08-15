@@ -53,7 +53,7 @@ export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string
                   topWords: noteData.topWords,
                   tone: noteData.tone,
                   uid: noteData.uid,
-                  createdAt: noteData.createdAt.toDate(),
+                  createdAt: noteData.createdAt.toString(),
               };
           } else {
               console.log("No such document!");

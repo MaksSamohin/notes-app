@@ -22,6 +22,7 @@ export const fetchUserData = createAsyncThunk(
     if (userDoc.exists()) {
       const userData = userDoc.data();
       return {
+        uid,
         displayName: userData.displayName || null,
         email: userData.email || null,
       };
@@ -76,6 +77,7 @@ export const userSlice = createSlice({
     builder
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.displayName = action.payload.displayName || null;
+        state.uid = action.payload.uid;
         state.email = action.payload.email || null
       })
       .addCase(updateUserNameInDB.fulfilled, (state, action) => {
