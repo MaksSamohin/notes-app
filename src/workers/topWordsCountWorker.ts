@@ -24,7 +24,6 @@ function countTopWords(text: string) {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([word]) => word);
-    console.log("Computed topWords:", topWords);
     return topWords;
 }
 

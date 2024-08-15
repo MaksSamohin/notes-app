@@ -81,7 +81,7 @@ export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<No
     return updatedNote;
   });
   
-  export const deleteNote = createAsyncThunk('notes/deleteNote', async (noteId: string) => {
+  export const deleteNote = createAsyncThunk<string, string>('notes/deleteNote', async (noteId: string) => {
     const docRef = doc(db, 'notes', noteId);
     await deleteDoc(docRef);
     return noteId;

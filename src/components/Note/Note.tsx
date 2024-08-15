@@ -4,8 +4,8 @@ import { Paper, Typography, Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "./Note.module.css";
 import Link from "next/link";
-import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
+import { deleteNote } from "@/store/noteSlice";
+import { useAppDispatch } from "@/store/store";
 
 interface NoteProps {
   title: string;
@@ -27,6 +27,7 @@ export default function Note({
   tone,
 }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setOpen(true);
@@ -37,8 +38,7 @@ export default function Note({
 
   const handleDelete = async () => {
     try {
-      const docRef = doc(db, "notes", id);
-      await deleteDoc(docRef);
+      await dispatch(deleteNote(id)).unwrap();
       onDelete(id);
       handleClose();
     } catch (error) {

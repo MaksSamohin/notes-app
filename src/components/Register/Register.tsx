@@ -93,7 +93,11 @@ export default function Register() {
   return (
     <Box className={styles.registerBox}>
       <Typography className={styles.registerTitle}>Register</Typography>
-      <form onSubmit={handleSubmit} className={styles.registerForm}>
+      <FormControl
+        component="form"
+        onSubmit={handleSubmit}
+        className={styles.registerForm}
+      >
         <FormControl className={styles.emailForm} error={!!emailError}>
           <InputLabel htmlFor="email">Email address</InputLabel>
           <Input
@@ -141,7 +145,7 @@ export default function Register() {
             </FormHelperText>
           )}
         </FormControl>
-      </form>
+      </FormControl>
       <Box>
         Already have an account?{" "}
         <Link className={styles.redirect} href="/login">

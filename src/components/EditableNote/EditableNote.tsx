@@ -15,6 +15,7 @@ import { addDoc, collection, updateDoc, doc, getDoc } from "firebase/firestore";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchNoteByIdThunk } from "@/store/noteSlice";
+import { useAppDispatch } from "@/store/store";
 
 interface EditableNoteProps {
   noteId?: string | null;
@@ -30,7 +31,7 @@ export default function EditableNote({
   noteId = null,
   onUpdateMetrics,
 }: EditableNoteProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [wordCount, setWordCount] = useState<number>(0);

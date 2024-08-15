@@ -4,10 +4,8 @@ import styles from "./NoteList.module.css";
 import { AddCircleOutline } from "@mui/icons-material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
-import { RootState } from "@/store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "@/store/store";
+import { useSelector } from "react-redux";
 import { fetchNotes } from "@/store/noteSlice";
 
 interface Note {
@@ -20,7 +18,7 @@ interface Note {
 }
 
 export default function NoteList() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [notes, setNotes] = useState([]);
   const user = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(true);

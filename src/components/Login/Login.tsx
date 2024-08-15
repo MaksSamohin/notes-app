@@ -16,8 +16,8 @@ import { auth } from "@/firebaseConfig";
 import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { setUser } from "@/store/userSlice";
-import { useDispatch } from "react-redux";
 import { FirebaseError } from "firebase/app";
+import { useAppDispatch } from "@/store/store";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,7 +26,7 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -67,7 +67,6 @@ export default function Login() {
           email,
           password
         );
-        console.log("User logged in:", userCredential.user);
         const { uid, email: userEmail } = userCredential.user;
 
         if (!userEmail) {
