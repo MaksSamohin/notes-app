@@ -287,7 +287,7 @@ export default function EditableNote({
         {titleError && <FormHelperText error>{titleError}</FormHelperText>}
         <hr />
         <TextareaAutosize
-          minRows="35"
+          minRows={35}
           className={styles.editableNoteText}
           placeholder="Note Content"
           value={content}
