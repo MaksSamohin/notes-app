@@ -15,7 +15,7 @@ interface Note {
   wordCount: number;
   topWords: string;
   tone: string;
-  sharedWith?: string[];
+  sharedWith: string[];
   uid: string;
   createdAt: string;
 }
@@ -38,7 +38,7 @@ export default function NoteList({ searchText }: NoteListProps) {
     setUserLoading(false);
 
     if (user.uid && user.email) {
-      dispatch(fetchNotes(user.uid) as any)
+      dispatch(fetchNotes(user.uid))
         .unwrap()
         .then((res) => {
           setNotes(res);
@@ -66,6 +66,7 @@ export default function NoteList({ searchText }: NoteListProps) {
 
   return (
     <>
+      <Typography className={styles.notesTitle}>My notes</Typography>
       <Box className={styles.noteList}>
         {notes
           .filter(
@@ -85,7 +86,7 @@ export default function NoteList({ searchText }: NoteListProps) {
               onDelete={handleDelete}
               sharedWith={note.sharedWith}
               ownerId={note.uid}
-              currentUserId={user.uid}
+              currentUserId={user.uid || ""}
             />
           ))}
         <Link href="/edit">
@@ -94,7 +95,7 @@ export default function NoteList({ searchText }: NoteListProps) {
           </Button>
         </Link>
       </Box>
-      <Typography className={styles.shared}>Shared from others</Typography>
+      <Typography className={styles.notesTitle}>Shared from others</Typography>
       <Box className={styles.noteList}>
         {sharedNotes
           .filter(

@@ -6,7 +6,6 @@ import styles from "./Note.module.css";
 import Link from "next/link";
 import { deleteNote } from "@/store/noteSlice";
 import { useAppDispatch } from "@/store/store";
-import { useSelector } from "react-redux";
 
 interface NoteProps {
   title: string;
@@ -16,7 +15,7 @@ interface NoteProps {
   topWords: string;
   tone: string;
   onDelete: (id: string) => void;
-  sharedWith?: string[];
+  sharedWith: string[];
   ownerId: string;
   currentUserId: string;
 }
