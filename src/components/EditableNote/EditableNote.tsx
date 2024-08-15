@@ -52,7 +52,9 @@ export default function EditableNote({
 
   const router = useRouter();
   const { id: noteIdFromUrl } = useParams();
-
+  const noteIdTypized = Array.isArray(noteIdFromUrl)
+    ? noteIdFromUrl[0]
+    : noteIdFromUrl;
   // Creating refs for workers
   const wordWorkerRef = useRef<Worker | null>(null);
   const symbolsWorkerRef = useRef<Worker | null>(null);
@@ -125,33 +127,62 @@ export default function EditableNote({
 
     wordWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
       setWordCount(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        wordCount: e.data,
-      }));
+      onUpdateMetrics(
+        (prevMetrics: {
+          wordCount: number;
+          symbolsCount: number;
+          topWords: string;
+          tone: string;
+        }) => ({
+          ...prevMetrics,
+          wordCount: e.data,
+        })
+      );
     };
 
     symbolsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
       setSymbolsCount(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        symbolsCount: e.data,
-      }));
+      onUpdateMetrics(
+        (prevMetrics: {
+          wordCount: number;
+          symbolsCount: number;
+          topWords: string;
+          tone: string;
+        }) => ({
+          ...prevMetrics,
+          symbolsCount: e.data,
+        })
+      );
     };
 
     topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
       setTopWords(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        topWords: e.data,
-      }));
+      onUpdateMetrics(
+        (prevMetrics: {
+          wordCount: number;
+          symbolsCount: number;
+          topWords: string;
+          tone: string;
+        }) => ({
+          ...prevMetrics,
+          topWords: e.data,
+        })
+      );
     };
+
     checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
       setTone(e.data);
-      onUpdateMetrics((prevMetrics) => ({
-        ...prevMetrics,
-        tone: e.data,
-      }));
+      onUpdateMetrics(
+        (prevMetrics: {
+          wordCount: number;
+          symbolsCount: number;
+          topWords: string;
+          tone: string;
+        }) => ({
+          ...prevMetrics,
+          tone: e.data,
+        })
+      );
     };
 
     return () => {
@@ -215,10 +246,10 @@ export default function EditableNote({
         }
         const uid = user.uid;
 
-        if (noteIdFromUrl) {
+        if (noteIdTypized) {
           await dispatch(
             updateNote({
-              id: noteIdFromUrl,
+              id: noteIdTypized,
               title,
               content,
               wordCount,

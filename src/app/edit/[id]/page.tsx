@@ -13,6 +13,7 @@ import { useState } from "react";
 export default function Edit() {
   const setSearchText = (text: string) => {};
   const { id } = useParams();
+  const noteId = Array.isArray(id) ? id[0] : id || null;
 
   const [metrics, setMetrics] = useState<{
     wordCount: number;
@@ -40,7 +41,7 @@ export default function Edit() {
       <Box component="main" className={styles.main}>
         <Nav setSearchText={setSearchText} />
         <Box className={styles.notesInfo}>
-          <EditableNote noteId={id} onUpdateMetrics={handleUpdateMetrics} />
+          <EditableNote noteId={noteId} onUpdateMetrics={handleUpdateMetrics} />
           <Analysis
             wordCount={metrics.wordCount}
             symbolsCount={metrics.symbolsCount}

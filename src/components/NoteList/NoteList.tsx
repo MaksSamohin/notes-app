@@ -15,7 +15,7 @@ interface Note {
   wordCount: number;
   topWords: string;
   tone: string;
-  sharedWith: string[];
+  sharedWith?: string[];
   uid: string;
   createdAt: string;
 }
@@ -111,9 +111,11 @@ export default function NoteList({ searchText }: NoteListProps) {
               content={note.content}
               wordCount={note.wordCount}
               topWords={note.topWords}
+              onDelete={handleDelete}
               tone={note.tone}
+              sharedWith={note.sharedWith}
               ownerId={note.uid}
-              currentUserId={user.uid}
+              currentUserId={user.uid || ""}
             />
           ))}
       </Box>

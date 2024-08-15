@@ -15,7 +15,7 @@ interface NoteProps {
   topWords: string;
   tone: string;
   onDelete: (id: string) => void;
-  sharedWith: string[];
+  sharedWith?: string[];
   ownerId: string;
   currentUserId: string;
 }
