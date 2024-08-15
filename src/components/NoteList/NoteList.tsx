@@ -15,7 +15,7 @@ interface Note {
   wordCount: number;
   topWords: string;
   tone: string;
-  sharedWith?: string[];
+  sharedWith: string[];
   uid: string;
   createdAt: string;
 }

@@ -242,6 +242,7 @@ export default function EditableNote({
               tone,
               uid,
               createdAt: new Date().toString(),
+              sharedWith: [],
             })
           ).unwrap();
         } else {
@@ -255,6 +256,7 @@ export default function EditableNote({
               tone,
               uid,
               createdAt: new Date().toString(),
+              sharedWith: [],
             })
           ).unwrap();
         }

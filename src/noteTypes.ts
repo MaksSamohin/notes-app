@@ -7,5 +7,6 @@ export interface Note {
     topWords: string;
     tone: string;
     uid: string;
+    sharedWith: string[];
     createdAt: string;
   }

@@ -53,7 +53,7 @@ export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string
                   tone: noteData.tone,
                   uid: noteData.uid,
                   createdAt: noteData.createdAt.toString(),
-              };
+              } as Note; ;
           } else {
               console.log("No such document!");
               return null;
@@ -121,11 +121,16 @@ export const fetchSharedNotes = createAsyncThunk<Note[], string>('notes/fetchSha
 export const addNote = createAsyncThunk('notes/addNote', async (newNote: Omit<Note, 'id'>, { getState }) => {
   const state = getState() as RootState;
   const currentUser = state.user;
-  
-  const userDocRef = doc(db, "users", currentUser.uid);
+
+  const userId = currentUser.uid;
+  if (!userId) {
+    throw new Error("User ID is null or undefined");
+  }
+
+  const userDocRef = doc(db, "users", userId);
   const userDoc = await getDoc(userDocRef);
 
-  let sharedWith = [];
+  let sharedWith: string[] = [];
 
   if (userDoc.exists()) {
     const userData = userDoc.data();
