@@ -4,8 +4,8 @@ import { Paper, Typography, Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "./Note.module.css";
 import Link from "next/link";
-import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
+import { deleteNote } from "@/store/noteSlice";
+import { useAppDispatch } from "@/store/store";
 
 interface NoteProps {
   title: string;
@@ -15,6 +15,9 @@ interface NoteProps {
   topWords: string;
   tone: string;
   onDelete: (id: string) => void;
+  sharedWith: string[];
+  ownerId: string;
+  currentUserId: string;
 }
 
 export default function Note({
@@ -25,8 +28,12 @@ export default function Note({
   wordCount,
   topWords,
   tone,
+  sharedWith,
+  ownerId,
+  currentUserId,
 }: NoteProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setOpen(true);
@@ -34,11 +41,9 @@ export default function Note({
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleDelete = async () => {
     try {
-      const docRef = doc(db, "notes", id);
-      await deleteDoc(docRef);
+      await dispatch(deleteNote(id)).unwrap();
       onDelete(id);
       handleClose();
     } catch (error) {
@@ -66,12 +71,14 @@ export default function Note({
           </Box>
         </Link>
 
-        <Box className={styles.noteButtons}>
-          <Link href={`/edit/${id}`}>
-            <Button>Edit</Button>
-          </Link>
-          <Button onClick={(e) => handleOpen(e)}>Delete</Button>
-        </Box>
+        {ownerId === currentUserId && (
+          <Box className={styles.noteButtons}>
+            <Link href={`/edit/${id}`}>
+              <Button>Edit</Button>
+            </Link>
+            <Button onClick={(e) => handleOpen(e)}>Delete</Button>
+          </Box>
+        )}
       </Paper>
 
       <Modal

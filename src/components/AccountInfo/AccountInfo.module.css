@@ -1,0 +1,54 @@
+.accountInfo {
+    padding: 20px;
+    margin: 0 auto;
+    border-radius: 10px;
+    width: 50%;
+    height: 50%;
+    background-color: white;
+    box-shadow: -1px 3px 5px 3px rgba(0,0,0,0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.accountName, .accountEmail, .accountNotes, .shareNotes  {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.deleteModal {
+    position: absolute;
+    background-color: white;
+    min-width: 20%;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #1976d2;
+    border-radius: 10px;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    
+}
+
+.deleteModalButtons {
+    display: flex;
+    gap: 20px;
+}
+
+.deleteModalText {
+    font-weight: 800;
+}
+.deleteModalYes {
+    background-color: rgb(240, 13, 13);
+    color: white;
+}
+.deleteModalYes:hover {
+    background-color: rgba(255, 56, 56, 0.493);
+
+    color: black;
+}
