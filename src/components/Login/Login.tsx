@@ -137,7 +137,7 @@ export default function Login() {
         <Typography className={styles.generalError}>{generalError}</Typography>
       )}
       <Box>
-        Don't have account?{" "}
+        Don&apos;t have account?
         <Link className={styles.redirect} href="/register">
           Register
         </Link>
