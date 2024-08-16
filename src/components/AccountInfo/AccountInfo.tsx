@@ -125,8 +125,10 @@ export default function AccountInfo() {
               {user.sharedUsers &&
                 user.sharedUsers.map((item) => {
                   return (
-                    <Box key={item} className={styles.sharedwithItem}>
-                      <Typography>{item}</Typography>
+                    <Box key={item} className={styles.sharedWithItem}>
+                      <Typography className={styles.sharedWithEmail}>
+                        {item}
+                      </Typography>
                       {user.uid && (
                         <Button
                           className={styles.sharedWithRemoveButton}
