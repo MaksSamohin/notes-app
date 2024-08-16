@@ -6,84 +6,82 @@ import {
   Modal,
   FormHelperText,
   CircularProgress,
-} from "@mui/material";
-import styles from "./AccountInfo.module.css";
-import { RootState, useAppDispatch } from "@/store/store";
-import { useSelector } from "react-redux";
-import { fetchUserData } from "@/store/userSlice";
-import { useEffect, useState } from "react";
+} from '@mui/material'
+import styles from './AccountInfo.module.css'
+import { RootState, useAppDispatch } from '@/store/store'
+import { useSelector } from 'react-redux'
+import { fetchUserData } from '@/store/userSlice'
+import { useEffect, useState } from 'react'
 import {
   updateUserNameInDB,
   deleteAllUserNotes,
   removeSharedUser,
-} from "@/store/userSlice";
-import { fetchNotes, shareAllNotesWithUser } from "@/store/noteSlice";
+} from '@/store/userSlice'
+import { fetchNotes, shareAllNotesWithUser } from '@/store/noteSlice'
 
 export default function AccountInfo() {
-  const dispatch = useAppDispatch();
-  const user = useSelector((state: RootState) => state.user);
-  const notes = useSelector((state: RootState) => state.notes.notes);
-  const [newUsername, setNewUsername] = useState<string>(
-    user.displayName || ""
-  );
-  const [open, setOpen] = useState<boolean>(false);
-  const [friendEmail, setFriendEmail] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch()
+  const user = useSelector((state: RootState) => state.user)
+  const notes = useSelector((state: RootState) => state.notes.notes)
+  const [newUsername, setNewUsername] = useState<string>(user.displayName || '')
+  const [open, setOpen] = useState<boolean>(false)
+  const [friendEmail, setFriendEmail] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (user.displayName !== null) {
-      setNewUsername(user.displayName);
+      setNewUsername(user.displayName)
     }
-  }, [user.displayName]);
+  }, [user.displayName])
 
   useEffect(() => {
     if (user.uid) {
-      dispatch(fetchUserData(user.uid));
-      dispatch(fetchNotes(user.uid));
+      dispatch(fetchUserData(user.uid))
+      dispatch(fetchNotes(user.uid))
     }
-  }, [user.uid, dispatch]);
+  }, [user.uid, dispatch])
 
   const handleOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleUsernameChange = async () => {
     if (user.uid && newUsername.trim()) {
-      dispatch(updateUserNameInDB({ uid: user.uid, displayName: newUsername }));
+      dispatch(updateUserNameInDB({ uid: user.uid, displayName: newUsername }))
     }
-  };
+  }
 
   const handleDeleteAllNotes = async () => {
     if (user.uid) {
-      await deleteAllUserNotes(user.uid);
-      dispatch(fetchNotes(user.uid));
+      await deleteAllUserNotes(user.uid)
+      dispatch(fetchNotes(user.uid))
     }
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleShareAllNotes = async () => {
     if (user.uid && friendEmail.trim()) {
-      setIsLoading(true);
+      setIsLoading(true)
       await dispatch(
-        shareAllNotesWithUser({ uid: user.uid, email: friendEmail })
-      );
-      await dispatch(fetchUserData(user.uid));
-      setFriendEmail("");
-      setIsLoading(false);
+        shareAllNotesWithUser({ uid: user.uid, email: friendEmail }),
+      )
+      await dispatch(fetchUserData(user.uid))
+      setFriendEmail('')
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleRemoveSharedUser = async (email: string) => {
     if (user.uid) {
-      setIsLoading(true);
-      await dispatch(removeSharedUser({ uid: user.uid, email }));
-      await dispatch(fetchUserData(user.uid));
-      setIsLoading(false);
+      setIsLoading(true)
+      await dispatch(removeSharedUser({ uid: user.uid, email }))
+      await dispatch(fetchUserData(user.uid))
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <>
@@ -92,7 +90,7 @@ export default function AccountInfo() {
           <Typography>Account name:</Typography>
           <Input
             value={newUsername}
-            placeholder={"Set your username"}
+            placeholder={'Set your username'}
             onChange={(e) => setNewUsername(e.target.value)}
           />
           <Button onClick={handleUsernameChange}>Save</Button>
@@ -117,7 +115,7 @@ export default function AccountInfo() {
           <Button onClick={handleShareAllNotes}>Add</Button>
         </Box>
         <Box className={styles.sharedWith}>
-          <Typography>You shared with:</Typography>
+          <Typography>You shared notes with:</Typography>
           {isLoading ? (
             <CircularProgress />
           ) : (
@@ -138,7 +136,7 @@ export default function AccountInfo() {
                         </Button>
                       )}
                     </Box>
-                  );
+                  )
                 })}
             </Box>
           )}
@@ -169,5 +167,5 @@ export default function AccountInfo() {
         </Box>
       </Modal>
     </>
-  );
+  )
 }
