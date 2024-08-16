@@ -1,94 +1,96 @@
 .accountInfo {
-    padding: 20px;
-    margin: 0 auto;
-    border-radius: 10px;
-    width: 50%;
-    height: 50%;
-    background-color: white;
-    box-shadow: -1px 3px 5px 3px rgba(0,0,0,0.22);
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  padding: 20px;
+  margin: 0 auto;
+  border-radius: 10px;
+  width: 50%;
+  height: 50%;
+  background-color: white;
+  box-shadow: -1px 3px 5px 3px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-.accountName, .accountEmail, .accountNotes, .shareNotes, .sharedWith  {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    word-break: break-all;
+.accountName,
+.accountEmail,
+.accountNotes,
+.shareNotes,
+.sharedWith {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  word-break: break-all;
 }
 
 .deleteModal {
-    position: absolute;
-    background-color: white;
-    min-width: 20%;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 2px solid #1976d2;
-    border-radius: 10px;
-    padding: 10px;
+  position: absolute;
+  background-color: white;
+  min-width: 20%;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #1976d2;
+  border-radius: 10px;
+  padding: 10px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    
-    
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .deleteModalButtons {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .deleteModalText {
-    font-weight: 800;
+  font-weight: 800;
 }
 .deleteModalYes {
-    background-color: rgb(240, 13, 13);
-    color: white;
+  background-color: rgb(240, 13, 13);
+  color: white;
 }
 .deleteModalYes:hover {
-    background-color: rgba(255, 56, 56, 0.493);
+  background-color: rgba(255, 56, 56, 0.493);
 
-    color: black;
+  color: black;
 }
 .sharedWith {
-    align-items: start;
-    flex-direction: column;
+  align-items: start;
+  flex-direction: column;
 }
 .sharedWithItems {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .sharedWithItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: #1976d2 2px solid;
-}
-.sharedWithEmail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: #1976d2 2px solid;
 }
 .sharedWithRemoveButton {
-    max-height: 25px;
-    color: rgb(245, 29, 29);
-    font-weight: 700;
-    background-color: rgb(243, 243, 243);
+  max-height: 25px;
+  color: rgb(245, 29, 29);
+  font-weight: 700;
+  background-color: rgb(243, 243, 243);
 }
 @media screen and (max-width: 768px) {
-    .accountInfo {
-        width: 95%;
-    }
-    .accountName, .accountEmail, .accountNotes, .shareNotes  {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px 0;
-        border-top: 1px solid #1976d2;
-        border-bottom: 1px solid #1976d2;
-    }
-    
+  .accountInfo {
+    width: 95%;
+  }
+  .accountName,
+  .accountEmail,
+  .accountNotes,
+  .shareNotes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px 0;
+    border-top: 1px solid #1976d2;
+    border-bottom: 1px solid #1976d2;
+  }
 }
