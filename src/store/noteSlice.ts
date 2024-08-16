@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query, where, getDoc, writeBatch } from 'firebase/firestore';
@@ -57,7 +59,7 @@ export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string
                   tone: noteData.tone,
                   uid: noteData.uid,
                   createdAt: noteData.createdAt.toString(),
-              } as Note; ;
+              } as Note;
           } else {
               console.log("No such document!");
               return null;

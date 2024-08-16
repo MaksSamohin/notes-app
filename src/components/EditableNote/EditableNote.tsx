@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   TextareaAutosize,
@@ -7,61 +9,61 @@ import {
   FormHelperText,
   Modal,
   Typography,
-} from "@mui/material";
-import styles from "./EditableNote.module.css";
-import { useRouter, useParams } from "next/navigation";
-import { auth } from "@/firebaseConfig";
-import { useState, useRef, useEffect } from "react";
-import { fetchNoteByIdThunk, addNote, updateNote } from "@/store/noteSlice";
-import { useAppDispatch } from "@/store/store";
+} from '@mui/material'
+import styles from './EditableNote.module.css'
+import { useRouter, useParams } from 'next/navigation'
+import { auth } from '@/firebaseConfig'
+import { useState, useRef, useEffect } from 'react'
+import { fetchNoteByIdThunk, addNote, updateNote } from '@/store/noteSlice'
+import { useAppDispatch } from '@/store/store'
 
 interface EditableNoteProps {
-  noteId?: string | null;
+  noteId?: string | null
   onUpdateMetrics: (metrics: {
-    wordCount: number;
-    symbolsCount: number;
-    topWords: string;
-    tone: string;
-  }) => void;
-  isReadOnly?: boolean;
+    wordCount: number
+    symbolsCount: number
+    topWords: string
+    tone: string
+  }) => void
+  isReadOnly?: boolean
 }
 
 export default function EditableNote({
   noteId = null,
   onUpdateMetrics,
 }: EditableNoteProps) {
-  const dispatch = useAppDispatch();
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
-  const [wordCount, setWordCount] = useState<number>(0);
-  const [symbolsCount, setSymbolsCount] = useState<number>(0);
-  const [topWords, setTopWords] = useState<string>("");
-  const [tone, setTone] = useState<string>("");
-  const [titleError, setTitleError] = useState<string | null>(null);
-  const [contentError, setContentError] = useState<string | null>(null);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>("");
-  const [isOwner, setIsOwner] = useState<boolean>(false);
+  const dispatch = useAppDispatch()
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
+  const [wordCount, setWordCount] = useState<number>(0)
+  const [symbolsCount, setSymbolsCount] = useState<number>(0)
+  const [topWords, setTopWords] = useState<string>('')
+  const [tone, setTone] = useState<string>('')
+  const [titleError, setTitleError] = useState<string | null>(null)
+  const [contentError, setContentError] = useState<string | null>(null)
+  const [isSaved, setIsSaved] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
+  const [modalMessage, setModalMessage] = useState<string>('')
+  const [isOwner, setIsOwner] = useState<boolean>(false)
 
   function openModal() {
-    setOpen(true);
+    setOpen(true)
   }
   const handleClose = () => {
-    setOpen(false);
-    router.push("/");
-  };
+    setOpen(false)
+    router.push('/')
+  }
 
-  const router = useRouter();
-  const { id: noteIdFromUrl } = useParams();
+  const router = useRouter()
+  const { id: noteIdFromUrl } = useParams()
   const noteIdTypized = Array.isArray(noteIdFromUrl)
     ? noteIdFromUrl[0]
-    : noteIdFromUrl;
+    : noteIdFromUrl
   // Creating refs for workers
-  const wordWorkerRef = useRef<Worker | null>(null);
-  const symbolsWorkerRef = useRef<Worker | null>(null);
-  const topWordsWorkerRef = useRef<Worker | null>(null);
-  const checkToneWorkerRef = useRef<Worker | null>(null);
+  const wordWorkerRef = useRef<Worker | null>(null)
+  const symbolsWorkerRef = useRef<Worker | null>(null)
+  const topWordsWorkerRef = useRef<Worker | null>(null)
+  const checkToneWorkerRef = useRef<Worker | null>(null)
 
   // Checking and setting info by ID of note
 
@@ -74,169 +76,169 @@ export default function EditableNote({
               noteId: noteIdTypized,
               currentUid: user.uid,
               currentUserEmail: user.email,
-            })
+            }),
           )
             .unwrap()
             .then((note) => {
               if (note) {
-                setTitle(note.title);
-                setContent(note.content);
-                setWordCount(note.wordCount);
-                setSymbolsCount(note.symbolsCount);
-                setTopWords(note.topWords);
-                setTone(note.tone);
-                setIsOwner(user.uid === note.uid);
+                setTitle(note.title)
+                setContent(note.content)
+                setWordCount(note.wordCount)
+                setSymbolsCount(note.symbolsCount)
+                setTopWords(note.topWords)
+                setTone(note.tone)
+                setIsOwner(user.uid === note.uid)
                 onUpdateMetrics({
                   wordCount: note.wordCount,
                   symbolsCount: note.symbolsCount,
                   topWords: note.topWords,
                   tone: note.tone,
-                });
+                })
               } else {
-                setModalMessage("Document doesn't exist or access denied.");
-                openModal();
+                setModalMessage("Document doesn't exist or access denied.")
+                openModal()
               }
             })
             .catch(() => {
-              setModalMessage("An error occurred while fetching the note.");
-              openModal();
-            });
+              setModalMessage('An error occurred while fetching the note.')
+              openModal()
+            })
         } else {
-          setIsOwner(true);
+          setIsOwner(true)
         }
       } else {
-        setModalMessage("Access was denied");
-        openModal();
+        setModalMessage('Access was denied')
+        openModal()
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, [noteIdTypized, dispatch]);
+    return () => unsubscribe()
+  }, [noteIdTypized, dispatch]) // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Main workers logic
   useEffect(() => {
     wordWorkerRef.current = new Worker(
-      new URL("@/workers/wordCountWorker.ts", import.meta.url),
-      { type: "module" }
-    );
+      new URL('@/workers/wordCountWorker.ts', import.meta.url),
+      { type: 'module' },
+    )
 
     symbolsWorkerRef.current = new Worker(
-      new URL("@/workers/symbolsCountWorker.ts", import.meta.url),
-      { type: "module" }
-    );
+      new URL('@/workers/symbolsCountWorker.ts', import.meta.url),
+      { type: 'module' },
+    )
     topWordsWorkerRef.current = new Worker(
-      new URL("@/workers/topWordsCountWorker.ts", import.meta.url),
-      { type: "module" }
-    );
+      new URL('@/workers/topWordsCountWorker.ts', import.meta.url),
+      { type: 'module' },
+    )
     checkToneWorkerRef.current = new Worker(
-      new URL("@/workers/checkToneWorker.ts", import.meta.url),
-      { type: "module" }
-    );
+      new URL('@/workers/checkToneWorker.ts', import.meta.url),
+      { type: 'module' },
+    )
 
     wordWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
-      const newWordCount = e.data;
-      setWordCount(newWordCount);
+      const newWordCount = e.data
+      setWordCount(newWordCount)
       onUpdateMetrics({
         wordCount: newWordCount,
         symbolsCount: symbolsCount,
         topWords: topWords,
         tone: tone,
-      });
-    };
+      })
+    }
 
     symbolsWorkerRef.current.onmessage = (e: MessageEvent<number>) => {
-      const newSymbolsCount = e.data;
-      setSymbolsCount(newSymbolsCount);
+      const newSymbolsCount = e.data
+      setSymbolsCount(newSymbolsCount)
       onUpdateMetrics({
         wordCount: wordCount,
         symbolsCount: newSymbolsCount,
         topWords: topWords,
         tone: tone,
-      });
-    };
+      })
+    }
 
     topWordsWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
-      const newTopWords = e.data;
-      setTopWords(newTopWords);
+      const newTopWords = e.data
+      setTopWords(newTopWords)
       onUpdateMetrics({
         wordCount: wordCount,
         symbolsCount: symbolsCount,
         topWords: newTopWords,
         tone: tone,
-      });
-    };
+      })
+    }
 
     checkToneWorkerRef.current.onmessage = (e: MessageEvent<string>) => {
-      const newTone = e.data;
-      setTone(newTone);
+      const newTone = e.data
+      setTone(newTone)
       onUpdateMetrics({
         wordCount: wordCount,
         symbolsCount: symbolsCount,
         topWords: topWords,
         tone: newTone,
-      });
-    };
+      })
+    }
 
     return () => {
       if (wordWorkerRef.current) {
-        wordWorkerRef.current.terminate();
+        wordWorkerRef.current.terminate()
       }
       if (symbolsWorkerRef.current) {
-        symbolsWorkerRef.current.terminate();
+        symbolsWorkerRef.current.terminate()
       }
       if (topWordsWorkerRef.current) {
-        topWordsWorkerRef.current.terminate();
+        topWordsWorkerRef.current.terminate()
       }
       if (checkToneWorkerRef.current) {
-        checkToneWorkerRef.current.terminate();
+        checkToneWorkerRef.current.terminate()
       }
-    };
-  }, [onUpdateMetrics]);
+    }
+  }, [onUpdateMetrics])
 
   // Worker's content display while changing content
   useEffect(() => {
     if (content && symbolsWorkerRef.current) {
-      symbolsWorkerRef.current.postMessage(content);
+      symbolsWorkerRef.current.postMessage(content)
     }
     if (content && topWordsWorkerRef.current) {
-      topWordsWorkerRef.current.postMessage(content);
+      topWordsWorkerRef.current.postMessage(content)
     }
     if (content && checkToneWorkerRef.current) {
-      checkToneWorkerRef.current.postMessage(content);
+      checkToneWorkerRef.current.postMessage(content)
     }
-  }, [content]);
+  }, [content])
 
   // Save button logic
   const handleSave = async () => {
     if (!isSaved) {
-      setIsSaved(true);
-      let hasError = false;
+      setIsSaved(true)
+      let hasError = false
       if (!title) {
-        setTitleError("Please set the title");
-        hasError = true;
+        setTitleError('Please set the title')
+        hasError = true
       } else {
-        setTitleError(null);
+        setTitleError(null)
       }
       if (!content) {
-        setContentError("Please set the content");
-        hasError = true;
+        setContentError('Please set the content')
+        hasError = true
       } else {
-        setContentError(null);
+        setContentError(null)
       }
 
       if (hasError) {
-        return;
+        return
       }
       // Updating or creating notes collection
       try {
-        const user = auth.currentUser;
+        const user = auth.currentUser
 
         if (!user) {
-          setModalMessage("Document doesn't exist or access denied.");
-          openModal();
-          return;
+          setModalMessage("Document doesn't exist or access denied.")
+          openModal()
+          return
         }
-        const uid = user.uid;
+        const uid = user.uid
 
         if (noteIdTypized) {
           await dispatch(
@@ -251,8 +253,8 @@ export default function EditableNote({
               uid,
               createdAt: new Date().toString(),
               sharedWith: [],
-            })
-          ).unwrap();
+            }),
+          ).unwrap()
         } else {
           await dispatch(
             addNote({
@@ -265,64 +267,64 @@ export default function EditableNote({
               uid,
               createdAt: new Date().toString(),
               sharedWith: [],
-            })
-          ).unwrap();
+            }),
+          ).unwrap()
         }
-        router.push("/");
+        router.push('/')
       } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error)
       }
     }
-  };
+  }
 
   // Reset all note fields
   const handleReset = () => {
-    setTitle("");
-    setContent("");
+    setTitle('')
+    setContent('')
 
-    setWordCount(0);
-    setSymbolsCount(0);
-    setTopWords("");
-    setTone("");
+    setWordCount(0)
+    setSymbolsCount(0)
+    setTopWords('')
+    setTone('')
 
     onUpdateMetrics({
       wordCount: 0,
       symbolsCount: 0,
-      topWords: "",
-      tone: "",
-    });
+      topWords: '',
+      tone: '',
+    })
 
     if (wordWorkerRef.current) {
-      wordWorkerRef.current.postMessage("");
+      wordWorkerRef.current.postMessage('')
     }
     if (symbolsWorkerRef.current) {
-      symbolsWorkerRef.current.postMessage("");
+      symbolsWorkerRef.current.postMessage('')
     }
     if (topWordsWorkerRef.current) {
-      topWordsWorkerRef.current.postMessage("");
+      topWordsWorkerRef.current.postMessage('')
     }
     if (checkToneWorkerRef.current) {
-      checkToneWorkerRef.current.postMessage("");
+      checkToneWorkerRef.current.postMessage('')
     }
-  };
+  }
 
   // Worker's process while changing content
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
+    setContent(e.target.value)
 
     if (wordWorkerRef.current) {
-      wordWorkerRef.current.postMessage(e.target.value);
+      wordWorkerRef.current.postMessage(e.target.value)
     }
     if (symbolsWorkerRef.current) {
-      symbolsWorkerRef.current.postMessage(e.target.value);
+      symbolsWorkerRef.current.postMessage(e.target.value)
     }
     if (topWordsWorkerRef.current) {
-      topWordsWorkerRef.current.postMessage(e.target.value);
+      topWordsWorkerRef.current.postMessage(e.target.value)
     }
     if (checkToneWorkerRef.current) {
-      checkToneWorkerRef.current.postMessage(e.target.value);
+      checkToneWorkerRef.current.postMessage(e.target.value)
     }
-  };
+  }
 
   return (
     <>
@@ -368,5 +370,5 @@ export default function EditableNote({
         </Box>
       </Modal>
     </>
-  );
+  )
 }

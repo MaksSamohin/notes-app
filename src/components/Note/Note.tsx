@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import { Paper, Typography, Box, Button, Modal } from "@mui/material";
-import { useState } from "react";
-import styles from "./Note.module.css";
-import Link from "next/link";
-import { deleteNote } from "@/store/noteSlice";
-import { useAppDispatch } from "@/store/store";
+import { Paper, Typography, Box, Button, Modal } from '@mui/material'
+import { useState } from 'react'
+import styles from './Note.module.css'
+import Link from 'next/link'
+import { deleteNote } from '@/store/noteSlice'
+import { useAppDispatch } from '@/store/store'
 
 interface NoteProps {
-  title: string;
-  content: string;
-  id: string;
-  wordCount: number;
-  topWords: string;
-  tone: string;
-  onDelete: (id: string) => void;
-  sharedWith?: string[];
-  ownerId: string;
-  currentUserId: string;
+  title: string
+  content: string
+  id: string
+  wordCount: number
+  topWords: string
+  tone: string
+  onDelete: (id: string) => void
+  sharedWith?: string[]
+  ownerId: string
+  currentUserId: string
 }
 
 export default function Note({
@@ -28,28 +28,27 @@ export default function Note({
   wordCount,
   topWords,
   tone,
-  sharedWith,
   ownerId,
   currentUserId,
 }: NoteProps) {
-  const [open, setOpen] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
+  const [open, setOpen] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setOpen(true);
-  };
+    e.stopPropagation()
+    setOpen(true)
+  }
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
   const handleDelete = async () => {
     try {
-      await dispatch(deleteNote(id)).unwrap();
-      onDelete(id);
-      handleClose();
+      await dispatch(deleteNote(id)).unwrap()
+      onDelete(id)
+      handleClose()
     } catch (error) {
-      console.error("Failed to delete the note:", error);
+      console.error('Failed to delete the note:', error)
     }
-  };
+  }
   return (
     <>
       <Paper elevation={3} className={styles.note}>
@@ -66,7 +65,7 @@ export default function Note({
               Text tone: {tone}
             </Typography>
             <Typography className={styles.noteOften}>
-              Top words: {topWords || "No words"}
+              Top words: {topWords || 'No words'}
             </Typography>
           </Box>
         </Link>
@@ -96,5 +95,5 @@ export default function Note({
         </Box>
       </Modal>
     </>
-  );
+  )
 }

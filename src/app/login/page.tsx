@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { Provider } from "react-redux";
-import styles from "./page.module.css";
-import Login from "@/components/Login/Login";
-import { store } from "@/store/store";
-import { Box } from "@mui/material";
+import { Provider } from 'react-redux'
+import styles from './page.module.css'
+import Login from '@/components/Login/Login'
+import { store } from '@/store/store'
+import { Box } from '@mui/material'
 
 export default function LoginPage() {
   return (
@@ -13,5 +13,5 @@ export default function LoginPage() {
         <Login />
       </Box>
     </Provider>
-  );
+  )
 }
