@@ -66,15 +66,15 @@ export default function EditableNote({
   // Checking and setting info by ID of note
 
   useEffect(() => {
-    if (noteIdFromUrl && typeof noteIdFromUrl === "string") {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        if (user) {
-          const currentUserEmail = user.email;
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        if (noteIdTypized) {
+          // Если мы редактируем существующую заметку
           dispatch(
             fetchNoteByIdThunk({
-              noteId: noteIdFromUrl,
+              noteId: noteIdTypized,
               currentUid: user.uid,
-              currentUserEmail,
+              currentUserEmail: user.email,
             })
           )
             .unwrap()
@@ -86,9 +86,7 @@ export default function EditableNote({
                 setSymbolsCount(note.symbolsCount);
                 setTopWords(note.topWords);
                 setTone(note.tone);
-
-                setIsOwner(user.uid === note.uid);
-
+                setIsOwner(user.uid === note.uid); // Установка владельца для существующей заметки
                 onUpdateMetrics({
                   wordCount: note.wordCount,
                   symbolsCount: note.symbolsCount,
@@ -105,14 +103,17 @@ export default function EditableNote({
               openModal();
             });
         } else {
-          setModalMessage("Access was denied");
-          openModal();
+          // Если создается новая заметка
+          setIsOwner(true); // Установка владельца сразу, так как создаем новую заметку
         }
-      });
+      } else {
+        setModalMessage("Access was denied");
+        openModal();
+      }
+    });
 
-      return () => unsubscribe();
-    }
-  }, [noteIdFromUrl, dispatch]);
+    return () => unsubscribe();
+  }, [noteIdTypized, dispatch]);
 
   // Main workers logic
   useEffect(() => {
