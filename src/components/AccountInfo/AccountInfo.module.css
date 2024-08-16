@@ -11,7 +11,7 @@
     gap: 30px;
 }
 
-.accountName, .accountEmail, .accountNotes, .shareNotes  {
+.accountName, .accountEmail, .accountNotes, .shareNotes, .sharedWith  {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -53,7 +53,25 @@
 
     color: black;
 }
-
+.sharedWith {
+    align-items: start;
+    flex-direction: column;
+}
+.sharedWithItems {
+    display: flex;
+    flex-direction: column;
+}
+.sharedwithItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sharedWithRemoveButton {
+    max-height: 25px;
+    color: rgb(245, 29, 29);
+    font-weight: 700;
+    background-color: rgb(243, 243, 243);
+}
 @media screen and (max-width: 768px) {
     .accountInfo {
         width: 95%;

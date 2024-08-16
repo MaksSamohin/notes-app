@@ -4,7 +4,11 @@ import { RootState, useAppDispatch } from "@/store/store";
 import { useSelector } from "react-redux";
 import { fetchUserData } from "@/store/userSlice";
 import { useEffect, useState } from "react";
-import { updateUserNameInDB, deleteAllUserNotes } from "@/store/userSlice";
+import {
+  updateUserNameInDB,
+  deleteAllUserNotes,
+  removeSharedUser,
+} from "@/store/userSlice";
 import { fetchNotes, shareAllNotesWithUser } from "@/store/noteSlice";
 
 export default function AccountInfo() {
@@ -16,19 +20,18 @@ export default function AccountInfo() {
   );
   const [open, setOpen] = useState<boolean>(false);
   const [friendEmail, setFriendEmail] = useState<string>("");
-
   useEffect(() => {
     if (user.displayName !== null) {
       setNewUsername(user.displayName);
     }
   }, [user.displayName]);
-
+  console.log(user);
   useEffect(() => {
     if (user.uid) {
       dispatch(fetchUserData(user.uid));
       dispatch(fetchNotes(user.uid));
     }
-  }, [user.uid, dispatch]);
+  }, [user.uid, dispatch, user.sharedUsers]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -87,6 +90,31 @@ export default function AccountInfo() {
             placeholder={"Set the friend's email"}
           />
           <Button onClick={handleShareAllNotes}>Add</Button>
+        </Box>
+        <Box className={styles.sharedWith}>
+          <Typography>You shared with:</Typography>
+          <Box className={styles.sharedWithItems}>
+            {user.sharedUsers &&
+              user.sharedUsers.map((item) => {
+                return (
+                  <Box key={item} className={styles.sharedwithItem}>
+                    <Typography>{item}</Typography>
+                    {user.uid && (
+                      <Button
+                        className={styles.sharedWithRemoveButton}
+                        onClick={() =>
+                          dispatch(
+                            removeSharedUser({ uid: user.uid!, email: item })
+                          )
+                        }
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </Box>
+                );
+              })}
+          </Box>
         </Box>
       </Box>
 

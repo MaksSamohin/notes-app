@@ -104,6 +104,8 @@ export const shareAllNotesWithUser = createAsyncThunk(
   }
 );
 
+
+
 export const fetchSharedNotes = createAsyncThunk<Note[], string>('notes/fetchSharedNotes', async (email: string) => {
   const q = query(collection(db, 'notes'), where('sharedWith', 'array-contains', email));
   const querySnapshot = await getDocs(q);
@@ -203,12 +205,14 @@ export const noteSlice = createSlice({
       builder.addCase(deleteNote.fulfilled, (state, action: PayloadAction<string>) => {
         state.notes = state.notes.filter((note) => note.id !== action.payload);
       });
+
       builder.addCase(shareAllNotesWithUser.fulfilled, (state, action) => {
         const email = action.payload;
         state.notes.forEach(note => {
           note.sharedWith = note.sharedWith ? [...note.sharedWith, email] : [email];
         });
       });
+      
     },
   });
 
