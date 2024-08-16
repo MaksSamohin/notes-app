@@ -75,7 +75,9 @@ export default function AccountInfo() {
         </Box>
         <Box className={styles.accountNotes}>
           <Typography>All notes count: {notes.length}</Typography>
-          <Button onClick={handleOpen}>Delete all notes</Button>
+          {notes.length > 0 && (
+            <Button onClick={handleOpen}>Delete all notes</Button>
+          )}
         </Box>
         <Box className={styles.shareNotes}>
           <Typography>You can share your notes with friends</Typography>
