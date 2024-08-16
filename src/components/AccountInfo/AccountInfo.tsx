@@ -115,7 +115,7 @@ export default function AccountInfo() {
           <Button onClick={handleShareAllNotes}>Add</Button>
         </Box>
         <Box className={styles.sharedWith}>
-          <Typography>You shared notes with:</Typography>
+          <Typography>You shared with:</Typography>
           {isLoading ? (
             <CircularProgress />
           ) : (
