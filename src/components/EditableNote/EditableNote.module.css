@@ -53,4 +53,10 @@
     .notesInfo {
         flex-direction: column;
     }
+    .editableNoteButtons {
+        gap: 20%;
+    }
+    .editableNoteSave, .editableNoteReset {
+        min-width: 30%;
+    }
 }
