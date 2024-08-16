@@ -1,4 +1,12 @@
-import { Box, Typography, Input, Button, Modal } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Input,
+  Button,
+  Modal,
+  FormHelperText,
+  CircularProgress,
+} from "@mui/material";
 import styles from "./AccountInfo.module.css";
 import { RootState, useAppDispatch } from "@/store/store";
 import { useSelector } from "react-redux";
@@ -20,17 +28,20 @@ export default function AccountInfo() {
   );
   const [open, setOpen] = useState<boolean>(false);
   const [friendEmail, setFriendEmail] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useEffect(() => {
     if (user.displayName !== null) {
       setNewUsername(user.displayName);
     }
   }, [user.displayName]);
+
   useEffect(() => {
     if (user.uid) {
       dispatch(fetchUserData(user.uid));
       dispatch(fetchNotes(user.uid));
     }
-  }, [user.uid, dispatch, user.sharedUsers]);
+  }, [user.uid, dispatch]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -55,8 +66,22 @@ export default function AccountInfo() {
 
   const handleShareAllNotes = async () => {
     if (user.uid && friendEmail.trim()) {
-      dispatch(shareAllNotesWithUser({ uid: user.uid, email: friendEmail }));
+      setIsLoading(true);
+      await dispatch(
+        shareAllNotesWithUser({ uid: user.uid, email: friendEmail })
+      );
+      await dispatch(fetchUserData(user.uid));
       setFriendEmail("");
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveSharedUser = async (email: string) => {
+    if (user.uid) {
+      setIsLoading(true);
+      await dispatch(removeSharedUser({ uid: user.uid, email }));
+      await dispatch(fetchUserData(user.uid));
+      setIsLoading(false);
     }
   };
 
@@ -87,33 +112,34 @@ export default function AccountInfo() {
             onChange={(e) => setFriendEmail(e.target.value)}
             value={friendEmail}
             placeholder={"Set the friend's email"}
+            aria-describedby="friendEmail-helper-text"
           />
           <Button onClick={handleShareAllNotes}>Add</Button>
         </Box>
         <Box className={styles.sharedWith}>
           <Typography>You shared with:</Typography>
-          <Box className={styles.sharedWithItems}>
-            {user.sharedUsers &&
-              user.sharedUsers.map((item) => {
-                return (
-                  <Box key={item} className={styles.sharedwithItem}>
-                    <Typography>{item}</Typography>
-                    {user.uid && (
-                      <Button
-                        className={styles.sharedWithRemoveButton}
-                        onClick={() =>
-                          dispatch(
-                            removeSharedUser({ uid: user.uid!, email: item })
-                          )
-                        }
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </Box>
-                );
-              })}
-          </Box>
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <Box className={styles.sharedWithItems}>
+              {user.sharedUsers &&
+                user.sharedUsers.map((item) => {
+                  return (
+                    <Box key={item} className={styles.sharedwithItem}>
+                      <Typography>{item}</Typography>
+                      {user.uid && (
+                        <Button
+                          className={styles.sharedWithRemoveButton}
+                          onClick={() => handleRemoveSharedUser(item)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </Box>
+                  );
+                })}
+            </Box>
+          )}
         </Box>
       </Box>
 
