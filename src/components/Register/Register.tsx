@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   FormControl,
@@ -8,95 +8,95 @@ import {
   Input,
   FormHelperText,
   Button,
-} from "@mui/material";
-import React, { useState } from "react";
-import styles from "./Register.module.css";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "@/firebaseConfig";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { doc, setDoc } from "firebase/firestore";
+} from '@mui/material'
+import React, { useState } from 'react'
+import styles from './Register.module.css'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth, db } from '@/firebaseConfig'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { doc, setDoc } from 'firebase/firestore'
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [submitPassword, setSubmitPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [submitPasswordError, setSubmitPasswordError] = useState("");
-  const [generalError, setGeneralError] = useState("");
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [submitPassword, setSubmitPassword] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [submitPasswordError, setSubmitPasswordError] = useState('')
+  const [generalError, setGeneralError] = useState('')
 
-  const router = useRouter();
+  const router = useRouter()
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+    setEmail(e.target.value)
+  }
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+    setPassword(e.target.value)
+  }
   const handleSubmitPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setSubmitPassword(e.target.value);
-  };
+    setSubmitPassword(e.target.value)
+  }
 
   const validateForm = () => {
-    let valid: boolean = true;
+    let valid: boolean = true
     if (!email) {
-      setEmailError("Email is required");
-      valid = false;
+      setEmailError('Email is required')
+      valid = false
     } else if (email.length > 48) {
-      setEmailError("Email length is too long");
+      setEmailError('Email length is too long')
     } else {
-      setEmailError("");
+      setEmailError('')
     }
 
     if (!password) {
-      setPasswordError("Password is required");
-      valid = false;
+      setPasswordError('Password is required')
+      valid = false
     } else if (password.length < 8) {
-      setPasswordError("Password length must be more than 8 chars");
-      valid = false;
+      setPasswordError('Password length must be more than 8 chars')
+      valid = false
     } else if (password.length > 64) {
-      setPasswordError("Password length is too long");
+      setPasswordError('Password length is too long')
     } else {
-      setPasswordError("");
+      setPasswordError('')
     }
 
     if (password !== submitPassword) {
-      setPasswordError("Passwords must be match");
-      setSubmitPasswordError("Passwords must be match");
-      valid = false;
+      setPasswordError('Passwords must be match')
+      setSubmitPasswordError('Passwords must be match')
+      valid = false
     } else {
-      setSubmitPasswordError("");
+      setSubmitPasswordError('')
     }
 
-    return valid;
-  };
+    return valid
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (validateForm()) {
       try {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
-          password
-        );
-        const user = userCredential.user;
+          password,
+        )
+        const user = userCredential.user
 
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(db, 'users', user.uid), {
           uid: user.uid,
           email: user.email,
-          displayName: "",
-        });
+          displayName: '',
+        })
 
-        router.push("/");
+        router.push('/')
       } catch (error: any) {
-        setEmailError("Email is unavailable");
-        setGeneralError(error.message);
+        setEmailError('Email is unavailable')
+        setGeneralError(error.message)
       }
     }
-  };
+  }
 
   return (
     <Box className={styles.registerBox}>
@@ -155,7 +155,7 @@ export default function Register() {
         </FormControl>
       </FormControl>
       <Box>
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link className={styles.redirect} href="/login">
           Login
         </Link>
@@ -165,8 +165,8 @@ export default function Register() {
         type="submit"
         onClick={handleSubmit}
       >
-        Register
+        Sign up
       </Button>
     </Box>
-  );
+  )
 }
