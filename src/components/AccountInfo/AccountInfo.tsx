@@ -25,7 +25,6 @@ export default function AccountInfo() {
       setNewUsername(user.displayName);
     }
   }, [user.displayName]);
-  console.log(user);
   useEffect(() => {
     if (user.uid) {
       dispatch(fetchUserData(user.uid));

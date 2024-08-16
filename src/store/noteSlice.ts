@@ -30,17 +30,21 @@ export const fetchNotes = createAsyncThunk<Note[], string>('notes/fetchNotes', a
     return notesData;
 });
 
-export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string; currentUid: string }>(
+export const fetchNoteByIdThunk = createAsyncThunk<Note | null, { noteId: string; currentUid: string, currentUserEmail: string | null }>(
   'notes/fetchNoteById',
-  async ({ noteId, currentUid }, thunkAPI) => {
+  async ({ noteId, currentUid, currentUserEmail }, thunkAPI) => {
       try {
           const docRef = doc(db, "notes", noteId);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
               const noteData = docSnap.data();
-              if (noteData.uid !== currentUid) {
-                  return null;
+
+              const isOwner = noteData.uid === currentUid;
+              const hasAccess = currentUserEmail && noteData.sharedWith.includes(currentUserEmail);
+
+              if (!isOwner && !hasAccess) {
+                  return null; 
               }
 
               return {

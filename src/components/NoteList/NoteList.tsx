@@ -96,8 +96,10 @@ export default function NoteList({ searchText }: NoteListProps) {
         </Link>
       </Box>
       <Typography className={styles.notesTitle}>Shared from others</Typography>
+
       <Box className={styles.noteList}>
         {sharedNotes
+          .filter((note) => user.email && note.sharedWith.includes(user.email))
           .filter(
             (note) =>
               note.title.toLowerCase().includes(searchText) ||

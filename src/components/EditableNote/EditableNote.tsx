@@ -23,6 +23,7 @@ interface EditableNoteProps {
     topWords: string;
     tone: string;
   }) => void;
+  isReadOnly?: boolean;
 }
 
 export default function EditableNote({
@@ -41,6 +42,7 @@ export default function EditableNote({
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>("");
+  const [isOwner, setIsOwner] = useState<boolean>(false);
 
   function openModal() {
     setOpen(true);
@@ -67,8 +69,13 @@ export default function EditableNote({
     if (noteIdFromUrl && typeof noteIdFromUrl === "string") {
       const unsubscribe = auth.onAuthStateChanged((user) => {
         if (user) {
+          const currentUserEmail = user.email;
           dispatch(
-            fetchNoteByIdThunk({ noteId: noteIdFromUrl, currentUid: user.uid })
+            fetchNoteByIdThunk({
+              noteId: noteIdFromUrl,
+              currentUid: user.uid,
+              currentUserEmail,
+            })
           )
             .unwrap()
             .then((note) => {
@@ -79,6 +86,8 @@ export default function EditableNote({
                 setSymbolsCount(note.symbolsCount);
                 setTopWords(note.topWords);
                 setTone(note.tone);
+
+                setIsOwner(user.uid === note.uid);
 
                 onUpdateMetrics({
                   wordCount: note.wordCount,
@@ -300,6 +309,7 @@ export default function EditableNote({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           error={!!titleError}
+          readOnly={!isOwner}
         />
         {titleError && <FormHelperText error>{titleError}</FormHelperText>}
         <hr />
@@ -309,16 +319,19 @@ export default function EditableNote({
           placeholder="Note Content"
           value={content}
           onChange={handleContentChange}
+          readOnly={!isOwner}
         />
         {contentError && <FormHelperText error>{contentError}</FormHelperText>}
-        <Box className={styles.editableNoteButtons}>
-          <Button onClick={handleSave} className={styles.editableNoteSave}>
-            Save
-          </Button>
-          <Button onClick={handleReset} className={styles.editableNoteReset}>
-            Reset
-          </Button>
-        </Box>
+        {isOwner && (
+          <Box className={styles.editableNoteButtons}>
+            <Button onClick={handleSave} className={styles.editableNoteSave}>
+              Save
+            </Button>
+            <Button onClick={handleReset} className={styles.editableNoteReset}>
+              Reset
+            </Button>
+          </Box>
+        )}
       </Paper>
       <Modal
         open={open}

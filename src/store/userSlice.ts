@@ -62,6 +62,19 @@ export const removeSharedUser = createAsyncThunk(
 
         await updateDoc(userDoc, { sharedUsers: updatedSharedUsers });
 
+        const q = query(collection(db, 'notes'), where('uid', '==', uid));
+        const querySnapshot = await getDocs(q);
+        const batch = writeBatch(db);
+
+        querySnapshot.forEach((doc) => {
+          const noteData = doc.data();
+          const updatedSharedWith = noteData.sharedWith.filter((sharedEmail: string) => sharedEmail !== email);
+          console.log(`Updating note ID: ${doc.id}, New sharedWith: ${updatedSharedWith}`);
+          batch.update(doc.ref, { sharedWith: updatedSharedWith });
+        });
+
+        await batch.commit();
+
         return updatedSharedUsers;
       } else {
         throw new Error("User not found");
