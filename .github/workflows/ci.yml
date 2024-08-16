@@ -1,17 +1,20 @@
-name: CI
+name: TypeScript Lint and Type Check
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build:
+  lint_and_type_check:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -21,5 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test
+      - name: Run ESLint for TypeScript
+        run: npm run lint
+
+      - name: Run TypeScript type check
+        run: npm run type-check
