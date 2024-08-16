@@ -15,6 +15,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    word-break: break-all;
 }
 
 .deleteModal {
@@ -54,6 +55,9 @@
 }
 
 @media screen and (max-width: 768px) {
+    .accountInfo {
+        width: 95%;
+    }
     .accountName, .accountEmail, .accountNotes, .shareNotes  {
         display: flex;
         flex-direction: column;
