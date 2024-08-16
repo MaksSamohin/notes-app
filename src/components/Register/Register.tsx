@@ -160,7 +160,11 @@ export default function Register() {
           Login
         </Link>
       </Box>
-      <Button type="submit" onClick={handleSubmit}>
+      <Button
+        className={styles.registerButton}
+        type="submit"
+        onClick={handleSubmit}
+      >
         Register
       </Button>
     </Box>

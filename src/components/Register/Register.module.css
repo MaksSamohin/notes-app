@@ -25,3 +25,13 @@
 .redirect {
     color: #1976d2;
 }
+
+.registerButton {
+    margin-top: 10px;
+    background-color: #1976d2;
+    width: 30%;
+    color: white;
+}
+.registerButton:hover {
+    background-color: #5e9ddb;
+}

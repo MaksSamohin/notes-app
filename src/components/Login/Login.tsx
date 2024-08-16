@@ -137,12 +137,16 @@ export default function Login() {
         <Typography className={styles.generalError}>{generalError}</Typography>
       )}
       <Box>
-        Don&apos;t have account?
+        Don&apos;t have account?&nbsp;
         <Link className={styles.redirect} href="/register">
           Register
         </Link>
       </Box>
-      <Button type="submit" onClick={handleSubmit}>
+      <Button
+        className={styles.signInButton}
+        type="submit"
+        onClick={handleSubmit}
+      >
         Sign In
       </Button>
     </Box>
