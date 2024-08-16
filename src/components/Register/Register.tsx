@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import {
@@ -24,7 +25,6 @@ export default function Register() {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [submitPasswordError, setSubmitPasswordError] = useState('')
-  const [generalError, setGeneralError] = useState('')
 
   const router = useRouter()
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,9 +91,8 @@ export default function Register() {
         })
 
         router.push('/')
-      } catch (error: any) {
+      } catch (error) {
         setEmailError('Email is unavailable')
-        setGeneralError(error.message)
       }
     }
   }

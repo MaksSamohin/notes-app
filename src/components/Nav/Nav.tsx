@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AppBar,
   Container,
@@ -10,69 +11,68 @@ import {
   Drawer,
   ListItem,
   Typography,
-} from "@mui/material";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, useAppDispatch } from "@/store/store";
-import { clearUser } from "@/store/userSlice";
-import { signOut } from "firebase/auth";
-import { auth } from "@/firebaseConfig";
-import styles from "./Nav.module.css";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth.hook";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
-import SearchIcon from "@mui/icons-material/Search";
-import { usePathname } from "next/navigation";
-import { fetchUserData } from "@/store/userSlice";
-import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
+} from '@mui/material'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState, useAppDispatch } from '@/store/store'
+import { clearUser } from '@/store/userSlice'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/firebaseConfig'
+import styles from './Nav.module.css'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth.hook'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import EditNoteIcon from '@mui/icons-material/EditNote'
+import SearchIcon from '@mui/icons-material/Search'
+import { usePathname } from 'next/navigation'
+import { fetchUserData } from '@/store/userSlice'
+import MenuIcon from '@mui/icons-material/Menu'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 interface NavProps {
-  setSearchText: (text: string) => void;
+  setSearchText: (text: string) => void
 }
 
 export default function Nav({ setSearchText }: NavProps) {
-  const user = useSelector((state: RootState) => state.user);
-  const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const route = useRouter();
-  const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
-  const [isHomePage, setIsHomepage] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.user)
+  const dispatch = useAppDispatch()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const route = useRouter()
+  const pathname = usePathname()
+  const [loading, setLoading] = useState(true)
+  const [isHomePage, setIsHomepage] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
-  useAuth(setLoading);
+  useAuth(setLoading)
 
   useEffect(() => {
     if (!loading && !user.uid) {
-      route.push("/login");
+      route.push('/login')
     }
 
-    if (pathname === "/") {
-      setIsHomepage(true);
+    if (pathname === '/') {
+      setIsHomepage(true)
     } else {
-      setIsHomepage(false);
+      setIsHomepage(false)
     }
     if (user.uid) {
-      dispatch(fetchUserData(user.uid));
+      dispatch(fetchUserData(user.uid))
     }
-  }, [user.uid, route, loading]);
+  }, [user.uid, route, loading])
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
       ) {
-        return;
+        return
       }
-      setDrawerOpen(open);
-    };
+      setDrawerOpen(open)
+    }
 
   const list = () => (
     <Box
@@ -107,26 +107,26 @@ export default function Nav({ setSearchText }: NavProps) {
         </ListItem>
       </List>
     </Box>
-  );
+  )
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      dispatch(clearUser());
-      handleMenuClose();
-      route.push("/login");
+      await signOut(auth)
+      dispatch(clearUser())
+      handleMenuClose()
+      route.push('/login')
     } catch (error) {
-      console.error("Error signing out: ", error);
+      console.error('Error signing out: ', error)
     }
-  };
+  }
   return (
     <>
       <AppBar>
@@ -135,7 +135,7 @@ export default function Nav({ setSearchText }: NavProps) {
             className={styles.mobileMenu}
             onClick={toggleDrawer(!drawerOpen)}
           >
-            <MenuIcon sx={{ color: "white", fontSize: 45 }} />
+            <MenuIcon sx={{ color: 'white', fontSize: 45 }} />
           </Button>
           <ul className={styles.linkList}>
             <li>
@@ -188,5 +188,5 @@ export default function Nav({ setSearchText }: NavProps) {
         {list()}
       </Drawer>
     </>
-  );
+  )
 }

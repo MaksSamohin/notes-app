@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { updateDoc, doc, getDoc,collection, query, where, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/firebaseConfig";

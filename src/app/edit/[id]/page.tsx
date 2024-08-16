@@ -1,40 +1,41 @@
-"use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client'
 
-import EditableNote from "@/components/EditableNote/EditableNote";
-import { Provider } from "react-redux";
-import { store } from "@/store/store";
-import { Box } from "@mui/material";
-import Nav from "@/components/Nav/Nav";
-import styles from "./page.module.css";
-import { useParams } from "next/navigation";
-import Analysis from "@/components/Analysis/Analysis";
-import { useState } from "react";
+import EditableNote from '@/components/EditableNote/EditableNote'
+import { Provider } from 'react-redux'
+import { store } from '@/store/store'
+import { Box } from '@mui/material'
+import Nav from '@/components/Nav/Nav'
+import styles from './page.module.css'
+import { useParams } from 'next/navigation'
+import Analysis from '@/components/Analysis/Analysis'
+import { useState } from 'react'
 
 export default function Edit() {
-  const setSearchText = (text: string) => {};
-  const { id } = useParams();
-  const noteId = Array.isArray(id) ? id[0] : id || null;
+  const setSearchText = (text: string) => {}
+  const { id } = useParams()
+  const noteId = Array.isArray(id) ? id[0] : id || null
 
   const [metrics, setMetrics] = useState<{
-    wordCount: number;
-    symbolsCount: number;
-    topWords: string;
-    tone: string;
+    wordCount: number
+    symbolsCount: number
+    topWords: string
+    tone: string
   }>({
     wordCount: 0,
     symbolsCount: 0,
-    topWords: "",
-    tone: "",
-  });
+    topWords: '',
+    tone: '',
+  })
 
   const handleUpdateMetrics = (newMetrics: {
-    wordCount: number;
-    symbolsCount: number;
-    topWords: string;
-    tone: string;
+    wordCount: number
+    symbolsCount: number
+    topWords: string
+    tone: string
   }) => {
-    setMetrics(newMetrics);
-  };
+    setMetrics(newMetrics)
+  }
 
   return (
     <Provider store={store}>
@@ -51,5 +52,5 @@ export default function Edit() {
         </Box>
       </Box>
     </Provider>
-  );
+  )
 }
