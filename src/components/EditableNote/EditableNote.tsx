@@ -279,6 +279,31 @@ export default function EditableNote({
   const handleReset = () => {
     setTitle("");
     setContent("");
+
+    setWordCount(0);
+    setSymbolsCount(0);
+    setTopWords("");
+    setTone("");
+
+    onUpdateMetrics({
+      wordCount: 0,
+      symbolsCount: 0,
+      topWords: "",
+      tone: "",
+    });
+
+    if (wordWorkerRef.current) {
+      wordWorkerRef.current.postMessage("");
+    }
+    if (symbolsWorkerRef.current) {
+      symbolsWorkerRef.current.postMessage("");
+    }
+    if (topWordsWorkerRef.current) {
+      topWordsWorkerRef.current.postMessage("");
+    }
+    if (checkToneWorkerRef.current) {
+      checkToneWorkerRef.current.postMessage("");
+    }
   };
 
   // Worker's process while changing content
