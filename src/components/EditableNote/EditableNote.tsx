@@ -69,7 +69,6 @@ export default function EditableNote({
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         if (noteIdTypized) {
-          // Если мы редактируем существующую заметку
           dispatch(
             fetchNoteByIdThunk({
               noteId: noteIdTypized,
@@ -86,7 +85,7 @@ export default function EditableNote({
                 setSymbolsCount(note.symbolsCount);
                 setTopWords(note.topWords);
                 setTone(note.tone);
-                setIsOwner(user.uid === note.uid); // Установка владельца для существующей заметки
+                setIsOwner(user.uid === note.uid);
                 onUpdateMetrics({
                   wordCount: note.wordCount,
                   symbolsCount: note.symbolsCount,
@@ -103,8 +102,7 @@ export default function EditableNote({
               openModal();
             });
         } else {
-          // Если создается новая заметка
-          setIsOwner(true); // Установка владельца сразу, так как создаем новую заметку
+          setIsOwner(true);
         }
       } else {
         setModalMessage("Access was denied");
